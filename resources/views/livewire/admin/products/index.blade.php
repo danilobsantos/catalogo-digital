@@ -103,7 +103,7 @@
                         <td class="px-4 py-3.5 font-medium text-[#544D42]">{{ $product->collection->name ?? '—' }}</td>
                         <td class="px-4 py-3.5 text-center">
                             @if ($product->has_ca)
-                                <span class="inline-block rounded-md bg-[#FAF6F0] border border-[#D97706]/30 text-[#D97706] px-2 py-0.5 text-[10px] font-bold">C.A. {{ $product->approvals }}</span>
+                                <span class="inline-block rounded-md bg-[#FAF6F0] border border-[#D97706]/30 text-[#D97706] px-2 py-0.5 text-[10px] font-bold">Sim</span>
                             @else
                                 <span class="text-[#9E9585] text-[11px]">—</span>
                             @endif

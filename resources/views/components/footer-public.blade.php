@@ -56,7 +56,7 @@
         </div>
 
         <div class="mt-12 pt-6 border-t border-[#E6E1D5] flex flex-col sm:flex-row items-center justify-between text-xs text-[#736A5B] gap-4">
-            <p>© {{ date('Y') }} {{ config('catalog.company.name') }}. Todos os direitos reservados.</p>
+            <p>© {{ date('Y') }} {{ config('catalog.company.name') }} | Desenvolvido por <a href="https://devstudio.com.br" target="_blank" rel="noopener" class="font-medium text-[#ff8400]">DevStudio - Inovação Digital</a></p>
             <p class="font-medium text-[#544D42]">Catálogo Digital de Calçados</p>
         </div>
     </div>
