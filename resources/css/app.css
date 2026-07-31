@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* ============================================================================
+ * CJ Calçados — Design System Tokens (Tons Terrosos & Couro Natural)
+ * Focado em alta legibilidade, contraste WCAG AAA e usabilidade mobile.
+ * ============================================================================ */
+
+@theme {
+  /* ---------- Neutros Terrosos / Couro (Light Mode Fixo) ---------- */
+  --color-neutral-0: #FFFFFF;
+  --color-neutral-50: #FAFAF7;
+  --color-neutral-100: #F4F1EA;
+  --color-neutral-200: #E6E1D5;
+  --color-neutral-300: #D3CBD9;
+  --color-neutral-400: #9E9585;
+  --color-neutral-500: #736A5B;
+  --color-neutral-600: #544D42;
+  --color-neutral-700: #3D372E;
+  --color-neutral-800: #28231C;
+  --color-neutral-900: #1C1915;
+  --color-neutral-1000: #12100D;
+
+  /* ---------- Marca & Destaques Terrosos ---------- */
+  --color-primary-50: #FAF6F0;
+  --color-primary-100: #F3EAD9;
+  --color-primary-500: #ff8400;
+  /* Terracota Couro */
+  --color-primary-600: #A84D29;
+  --color-primary-700: #883B1C;
+  --color-primary-900: #4D1E0B;
+
+  --color-accent-500: #D97706;
+  /* Âmbar Couro */
+  --color-accent-600: #B45309;
+
+  /* ---------- Ações & Status ---------- */
+  --color-whatsapp: #047857;
+  /* Esmeralda de Alto Contraste */
+  --color-whatsapp-hover: #065F46;
+
+  --color-success-500: #059669;
+  --color-warning-500: #D97706;
+  --color-danger-500: #DC2626;
+  --color-info-500: #2563EB;
+
+  /* ---------- Bordas e Sombras ---------- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  /* ---------- Tipografia ---------- */
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif;
+
+  /* ---------- Sombras Específicas ---------- */
+  --shadow-warm-sm: 0 2px 8px -2px rgba(44, 35, 25, 0.06);
+  --shadow-warm-md: 0 8px 24px -4px rgba(44, 35, 25, 0.08);
+  --shadow-warm-lg: 0 16px 36px -6px rgba(44, 35, 25, 0.12);
+}
+
+/* Base resets */
+body {
+  background-color: #FAFAF7;
+  color: #1C1915;
+  font-family: var(--font-sans);
+}
+
+.container-app {
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-app {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-app {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
