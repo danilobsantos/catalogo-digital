@@ -36,22 +36,15 @@ final class ImageIngestor
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
 
-        $extension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION)) ?: 'jpg';
         $folder = trim($folder, '/');
         $baseName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName) ?: 'image';
 
-        $originalRel = $folder === ''
-            ? "{$baseName}.{$extension}"
-            : "{$folder}/{$baseName}.{$extension}";
-
-        $bytes = file_get_contents($absolutePath);
-        if ($bytes === false) {
+        $originalRel = $this->persistOriginal($absolutePath, $folder, $baseName, $disk);
+        if ($originalRel === null) {
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
 
-        Storage::disk($disk)->put($originalRel, $bytes);
-
-        $variants = $this->generateVariants($absolutePath, $folder, $baseName, $extension, $disk);
+        $variants = $this->generateVariants($absolutePath, $folder, $baseName, $disk);
 
         return [
             'original' => $originalRel,
@@ -72,25 +65,20 @@ final class ImageIngestor
         string $disk = 'public',
     ): array {
         $folder = trim($folder, '/');
-        $extension = strtolower($file->getClientOriginalExtension()) ?: 'jpg';
         $cleanPrefix = preg_replace('/[^a-zA-Z0-9_-]/', '_', $prefix) ?: 'img';
         $baseName = $cleanPrefix.'_'.now()->timestamp;
-
-        $originalRel = $folder === ''
-            ? "{$baseName}.{$extension}"
-            : "{$folder}/{$baseName}.{$extension}";
 
         $real = $file->getRealPath();
         if ($real === false) {
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
-        $bytes = file_get_contents($real);
-        if ($bytes === false) {
+
+        $originalRel = $this->persistOriginal($real, $folder, $baseName, $disk);
+        if ($originalRel === null) {
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
-        Storage::disk($disk)->put($originalRel, $bytes);
 
-        $variants = $this->generateVariants($real, $folder, $baseName, $extension, $disk);
+        $variants = $this->generateVariants($real, $folder, $baseName, $disk);
 
         return [
             'original' => $originalRel,
@@ -100,13 +88,51 @@ final class ImageIngestor
     }
 
     /**
+     * Persiste o original sempre em WebP (resolução mantida), com fallback para o
+     * formato de entrada caso a conversão falhe.
+     *
+     * @return string|null Caminho relativo salvo, ou null em caso de falha.
+     */
+    private function persistOriginal(
+        string $absolute,
+        string $folder,
+        string $baseName,
+        string $disk,
+    ): ?string {
+        $webpRel = $folder === '' ? "{$baseName}.webp" : "{$folder}/{$baseName}.webp";
+
+        try {
+            Image::load($absolute)
+                ->format('webp')
+                ->quality(85)
+                ->save(Storage::disk($disk)->path($webpRel));
+
+            return $webpRel;
+        } catch (\Throwable) {
+            // Fallback: mantém o formato original.
+            $extension = strtolower(pathinfo($absolute, PATHINFO_EXTENSION)) ?: 'jpg';
+            $originalRel = $folder === ''
+                ? "{$baseName}.{$extension}"
+                : "{$folder}/{$baseName}.{$extension}";
+
+            $bytes = file_get_contents($absolute);
+            if ($bytes === false) {
+                return null;
+            }
+
+            Storage::disk($disk)->put($originalRel, $bytes);
+
+            return $originalRel;
+        }
+    }
+
+    /**
      * @return array{thumb: ?string, cover: ?string}
      */
     private function generateVariants(
         string $absolute,
         string $folder,
         string $baseName,
-        string $extension,
         string $disk,
     ): array {
         $thumbRel = $folder === '' ? "{$baseName}_thumb.webp" : "{$folder}/{$baseName}_thumb.webp";
