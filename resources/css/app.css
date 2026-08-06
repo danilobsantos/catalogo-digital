@@ -11,7 +11,7 @@
   --color-neutral-50: #FAFAF7;
   --color-neutral-100: #F4F1EA;
   --color-neutral-200: #E6E1D5;
-  --color-neutral-300: #D3CBD9;
+  --color-neutral-300: #D5CFC3;
   --color-neutral-400: #9E9585;
   --color-neutral-500: #736A5B;
   --color-neutral-600: #544D42;
@@ -43,29 +43,37 @@
   --color-danger-500: #DC2626;
   --color-info-500: #2563EB;
 
-  /* ---------- Bordas e Sombras ---------- */
+  /* ---------- Bordas ---------- */
   --radius-xs: 0.25rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
 
   /* ---------- Tipografia ---------- */
-  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
 
   /* ---------- Sombras Específicas ---------- */
+  --shadow-warm-xs: 0 1px 3px 0 rgba(44, 35, 25, 0.04);
   --shadow-warm-sm: 0 2px 8px -2px rgba(44, 35, 25, 0.06);
   --shadow-warm-md: 0 8px 24px -4px rgba(44, 35, 25, 0.08);
   --shadow-warm-lg: 0 16px 36px -6px rgba(44, 35, 25, 0.12);
 }
 
 /* Base resets */
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background-color: #FAFAF7;
   color: #1C1915;
   font-family: var(--font-sans);
+  line-height: 1.5;
 }
 
 .container-app {
@@ -89,4 +97,104 @@ body {
     padding-left: 2rem;
     padding-right: 2rem;
   }
+}
+
+/* Component Classes Padronizadas */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  background-color: #ff8400;
+  color: #ffffff;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 1px 3px 0 rgba(255, 132, 0, 0.2);
+}
+.btn-primary:hover {
+  background-color: #e07400;
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-primary:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(255, 132, 0, 0.3);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #F4F1EA;
+  color: #3D372E;
+  border: 1px solid #E6E1D5;
+  transition: all 0.15s ease-in-out;
+}
+.btn-secondary:hover {
+  background-color: #E6E1D5;
+  color: #1C1915;
+}
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  background-color: #047857;
+  color: #ffffff;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 1px 3px 0 rgba(4, 120, 87, 0.2);
+}
+.btn-whatsapp:hover {
+  background-color: #065F46;
+}
+.btn-whatsapp:active {
+  transform: scale(0.98);
+}
+
+.card-surface {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #E6E1D5;
+  box-shadow: var(--shadow-warm-sm);
+  transition: all 0.2s ease-in-out;
+}
+.card-surface:hover {
+  box-shadow: var(--shadow-warm-md);
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid #E6E1D5;
+  background-color: #ffffff;
+  color: #1C1915;
+  transition: all 0.15s ease-in-out;
+}
+.input-field::placeholder {
+  color: #9E9585;
+}
+.input-field:focus {
+  outline: none;
+  border-color: #ff8400;
+  box-shadow: 0 0 0 3px rgba(255, 132, 0, 0.15);
 }

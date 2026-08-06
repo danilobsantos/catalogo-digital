@@ -37,6 +37,11 @@
 
     <link rel="icon" type="image/png" href="/favicon.png">
 
+    <!-- Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{ $head ?? '' }}
@@ -44,7 +49,7 @@
     @livewireStyles
 </head>
 
-<body class="min-h-screen flex flex-col bg-[#FAFAF7] text-[#1C1915] dark:bg-neutral-950 dark:text-neutral-100 antialiased">
+<body class="min-h-screen flex flex-col bg-[#FAFAF7] text-[#1C1915] antialiased">
 
     {{-- Header Público --}}
     <x-header-public />
