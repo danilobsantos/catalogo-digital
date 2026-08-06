@@ -22,3 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+Arquivo.zip
+/public/db-migrate.php
+/public/*.sql

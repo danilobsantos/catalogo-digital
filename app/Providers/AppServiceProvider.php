@@ -10,6 +10,7 @@ use App\Domains\Catalog\Models\Category;
 use App\Domains\Catalog\Models\Collection;
 use App\Domains\Catalog\Models\Product;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
         $this->registerTenantAwareBindings();
     }
 
