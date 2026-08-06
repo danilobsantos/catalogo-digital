@@ -7,7 +7,6 @@ namespace App\Livewire\Admin\Products;
 use App\Domains\Catalog\Models\Category;
 use App\Domains\Catalog\Models\Collection as CollectionModel;
 use App\Domains\Catalog\Models\Product;
-use App\Traits\CompanyContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -72,10 +71,7 @@ final class Index extends Component
 
     public function delete(int $productId): void
     {
-        $product = Product::withoutCompanyScope()
-            ->where('id', $productId)
-            ->where('company_id', CompanyContext::id())
-            ->firstOrFail();
+        $product = Product::findOrFail($productId);
 
         $product->delete();
         session()->flash('flash.success', 'Produto removido.');

@@ -190,8 +190,7 @@ final class Form extends Component
 
     public function madeSlug(): void
     {
-        $base = Str::slug($this->name);
-        $this->slug = $base.'-'.Str::slug($this->code).($this->variant_code ? '-'.Str::slug($this->variant_code) : '');
+        $this->slug = $this->autoSlug();
     }
 
     public function save(): void

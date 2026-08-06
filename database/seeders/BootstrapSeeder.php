@@ -31,7 +31,6 @@ final class BootstrapSeeder extends Seeder
 
         // Fallback para console (seeds, jobs) — usado por HasCompanyScope::creating
         CompanyContext::setFallback($admin->active_company_id);
-        config()->set('catalog.console_fallback_company_id', $admin->active_company_id);
 
         // Importa catálogo de DOCX/JPG em material/.
         $this->call(CatalogSeeder::class);
