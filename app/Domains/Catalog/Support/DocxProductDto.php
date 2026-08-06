@@ -41,30 +41,4 @@ final class DocxProductDto
         public ?string $manufacturing = null,
     ) {}
 
-    /** @return array<string, mixed> */
-    public function toArray(): array
-    {
-        return [
-            'raw_code' => $this->rawCode,
-            'variant_code' => $this->variantCode,
-            'file_name' => $this->fileName,
-            'title' => $this->title,
-            'subtitle' => $this->subtitle,
-            'short_description' => $this->shortDescription,
-            'description' => $this->description,
-            'materials' => $this->materials,
-            'sole' => $this->sole,
-            'leather' => $this->leather,
-            'closure' => $this->closure,
-            'toe_cap' => $this->toeCap,
-            'approvals' => $this->approval,
-            'weight' => $this->weight,
-            'care' => $this->care,
-            'size_chart' => $this->sizeChart,
-            'colors' => $this->colors,
-            'features' => $this->features,
-            'has_ca' => $this->hasCa,
-            'manufacturing' => $this->manufacturing,
-        ];
-    }
 }

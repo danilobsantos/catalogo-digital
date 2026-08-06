@@ -78,8 +78,6 @@ final class Form extends Component
 
     public bool $is_active = true;
 
-    public bool $isInitialized = false;
-
     /** Arrays */
     public string $materialsCsv = '';
 
@@ -91,8 +89,6 @@ final class Form extends Component
     public string $manufacturing = '';
 
     public string $ca_number = '';
-
-    public string $slug_manual = '';
 
     /** Uploads */
     /** @var array<int, UploadedFile> */
@@ -139,16 +135,17 @@ final class Form extends Component
 
             $this->product = $product;
             $this->fillFromProduct();
-            $this->isInitialized = true;
         }
     }
 
     private function fillFromProduct(): void
     {
-        if (! $this->product) return;
+        if (! $this->product) {
+            return;
+        }
 
         $p = $this->product;
-        
+
         $this->code = (string) ($p->code ?? '');
         $this->variant_code = (string) ($p->variant_code ?? '');
         $this->name = (string) ($p->name ?? '');
@@ -159,27 +156,27 @@ final class Form extends Component
         $this->category_id = $p->category_id;
         $this->collection_id = $p->collection_id;
         $this->brand_id = $p->brand_id;
-        
+
         $this->sole = (string) ($p->sole ?? '');
         $this->leather = (string) ($p->leather ?? '');
         $this->closure = (string) ($p->closure ?? '');
         $this->toe_cap = (string) ($p->toe_cap ?? '');
         $this->approvals = (string) ($p->approvals ?? '');
         $this->weight_grams = (string) ($p->weight_grams ?? '');
-        
+
         $this->has_ca = (bool) $p->has_ca;
         $this->is_featured = (bool) $p->is_featured;
         $this->is_new = (bool) $p->is_new;
         $this->is_bestseller = (bool) $p->is_bestseller;
         $this->is_active = (bool) $p->is_active;
-        
+
         $this->materialsCsv = is_array($p->materials) ? implode(', ', $p->materials) : '';
         $this->careCsv = is_array($p->care_instructions) ? implode("\n", $p->care_instructions) : '';
         $this->colorsCsv = is_array($p->colors) ? implode(', ', $p->colors) : '';
-        
+
         $specs = is_array($p->specs) ? $p->specs : [];
         $this->manufacturing = (string) ($specs['processo_fabricacao'] ?? '');
-        
+
         $this->ca_number = (string) ($p->ca_number ?? '');
     }
 
@@ -193,8 +190,7 @@ final class Form extends Component
 
     public function madeSlug(): void
     {
-        $base = Str::slug($this->name);
-        $this->slug = $base.'-'.Str::slug($this->code).($this->variant_code ? '-'.Str::slug($this->variant_code) : '');
+        $this->slug = $this->autoSlug();
     }
 
     public function save(): void
@@ -339,13 +335,6 @@ final class Form extends Component
 
     public function render(): View
     {
-        // Fallback garantido: se o Livewire hidratou o produto DEPOIS do mount()
-        // O render() garantirá que os dados sejam preenchidos na interface
-        if (! $this->isInitialized && $this->product?->exists) {
-            $this->fillFromProduct();
-            $this->isInitialized = true;
-        }
-
         return view('livewire.admin.products.form', [
             'categories' => CategoryModel::query()->orderBy('name')->get(['id', 'name']),
             'collections' => CollectionModel::query()->orderBy('name')->get(['id', 'name']),

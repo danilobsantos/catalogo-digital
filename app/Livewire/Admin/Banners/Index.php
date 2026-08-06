@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Admin\Banners;
 
 use App\Domains\Catalog\Models\Banner;
-use App\Traits\CompanyContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -17,17 +16,13 @@ final class Index extends Component
 {
     public function delete(int $id): void
     {
-        Banner::withoutCompanyScope()
-            ->where('company_id', CompanyContext::id())
-            ->findOrFail($id)->delete();
+        Banner::findOrFail($id)->delete();
         session()->flash('flash.success', 'Banner removido.');
     }
 
     public function toggle(int $id): void
     {
-        $b = Banner::withoutCompanyScope()
-            ->where('company_id', CompanyContext::id())
-            ->findOrFail($id);
+        $b = Banner::findOrFail($id);
         $b->update(['is_active' => ! $b->is_active]);
     }
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Admin\Categories;
 
 use App\Domains\Catalog\Models\Category as CategoryModel;
-use App\Traits\CompanyContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -20,9 +19,7 @@ final class Index extends Component
 {
     public function delete(int $id): void
     {
-        $cat = CategoryModel::withoutCompanyScope()
-            ->where('company_id', CompanyContext::id())
-            ->findOrFail($id);
+        $cat = CategoryModel::findOrFail($id);
         $cat->delete();
         session()->flash('flash.success', 'Categoria removida.');
     }

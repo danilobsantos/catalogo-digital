@@ -7,16 +7,9 @@ namespace App\Console\Commands;
 use App\Domains\SEO\Support\VariantRegenerator;
 use Illuminate\Console\Command;
 
-/**
- * Regenera as variantes WebP (thumb/cover) para todas as imagens de produto.
- *
- * Uso:
- *   php artisan catalog:regenerate-variants
- *   php artisan catalog:regenerate-variants --only-empty
- */
 final class RegenerateVariantsCommand extends Command
 {
-    protected $signature = 'catalog:regenerate-variants {--only-empty : Apenas imagens sem variantes geradas}';
+    protected $signature = 'catalog:regenerate-variants';
 
     protected $description = 'Gera variantes thumb/cover WebP para product_images (Fase 9).';
 

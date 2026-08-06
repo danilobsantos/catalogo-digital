@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Admin\Collections;
 
 use App\Domains\Catalog\Models\Collection as CollectionModel;
-use App\Traits\CompanyContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -17,9 +16,7 @@ final class Index extends Component
 {
     public function delete(int $id): void
     {
-        CollectionModel::withoutCompanyScope()
-            ->where('company_id', CompanyContext::id())
-            ->findOrFail($id)->delete();
+        CollectionModel::findOrFail($id)->delete();
         session()->flash('flash.success', 'Coleção removida.');
     }
 

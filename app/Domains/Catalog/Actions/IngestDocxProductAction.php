@@ -93,22 +93,20 @@ final class IngestDocxProductAction
 
         foreach ($priority as $needle => $slug) {
             if (str_contains($haystack, $needle)) {
-                return $this->category($company, $slug);
+                return $this->findIdBySlug(Category::class, $company, $slug);
             }
         }
 
         // Default.
-        return $this->category($company, 'botina-passeio');
+        return $this->findIdBySlug(Category::class, $company, 'botina-passeio');
     }
 
-    private function category(Company $company, string $slug): ?int
+    private function findIdBySlug(string $modelClass, Company $company, string $slug): ?int
     {
-        $category = Category::withoutCompanyScope()
+        return $modelClass::withoutCompanyScope()
             ->where('company_id', $company->id)
             ->where('slug', $slug)
-            ->first(['id']);
-
-        return $category?->id;
+            ->first('id')?->id;
     }
 
     private function resolveCollection(Company $company, DocxProductDto $dto): ?int
@@ -116,36 +114,21 @@ final class IngestDocxProductAction
         $title = mb_strtoupper($dto->title.' '.$dto->subtitle);
 
         if (str_contains($title, 'INFANTIL') || str_starts_with((string) $dto->rawCode, '6') || str_starts_with((string) $dto->rawCode, '5')) {
-            return $this->collection($company, 'infantil');
+            return $this->findIdBySlug(CollectionModel::class, $company, 'infantil');
         }
         if (str_contains($title, 'FEM') || str_contains($title, 'FEMININA')) {
-            return $this->collection($company, 'feminina');
+            return $this->findIdBySlug(CollectionModel::class, $company, 'feminina');
         }
         if ($dto->hasCa) {
-            return $this->collection($company, 'profissional');
+            return $this->findIdBySlug(CollectionModel::class, $company, 'profissional');
         }
 
-        return $this->collection($company, 'classica');
-    }
-
-    private function collection(Company $company, string $slug): ?int
-    {
-        $collection = CollectionModel::withoutCompanyScope()
-            ->where('company_id', $company->id)
-            ->where('slug', $slug)
-            ->first(['id']);
-
-        return $collection?->id;
+        return $this->findIdBySlug(CollectionModel::class, $company, 'classica');
     }
 
     private function resolveBrandId(Company $company): ?int
     {
-        $brand = Brand::withoutCompanyScope()
-            ->where('company_id', $company->id)
-            ->where('slug', 'cj-calcados')
-            ->first(['id']);
-
-        return $brand?->id;
+        return $this->findIdBySlug(Brand::class, $company, 'cj-calcados');
     }
 
     private function clean(?string $value): ?string

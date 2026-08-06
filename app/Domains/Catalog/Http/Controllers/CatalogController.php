@@ -12,18 +12,6 @@ use Illuminate\Contracts\View\View;
 
 final class CatalogController
 {
-    public function index(): View
-    {
-        $products = Product::query()
-            ->where('is_active', true)
-            ->with('images')
-            ->latest('published_at')
-            ->paginate((int) config('catalog.ui.items_per_page', 12))
-            ->withQueryString();
-
-        return view('public.catalog.index', compact('products'));
-    }
-
     public function show(Product $product): View
     {
         abort_unless($product->is_active, 404);

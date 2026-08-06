@@ -26,6 +26,7 @@ class Category extends Model
 
     /** @use HasFactory<CategoryFactory> */
     use HasFactory;
+
     use LogsActivity;
 
     protected $fillable = [
@@ -58,12 +59,6 @@ class Category extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    /** @return HasMany<Category, self> */
-    public function children(): HasMany
-    {
-        return $this->hasMany(self::class, 'parent_id');
     }
 
     /** @return HasMany<Product, self> */

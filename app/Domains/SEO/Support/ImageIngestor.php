@@ -36,21 +36,9 @@ final class ImageIngestor
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
 
-        $folder = trim($folder, '/');
         $baseName = preg_replace('/[^a-zA-Z0-9_-]/', '_', $baseName) ?: 'image';
 
-        $originalRel = $this->persistOriginal($absolutePath, $folder, $baseName, $disk);
-        if ($originalRel === null) {
-            return ['original' => null, 'thumb' => null, 'cover' => null];
-        }
-
-        $variants = $this->generateVariants($absolutePath, $folder, $baseName, $disk);
-
-        return [
-            'original' => $originalRel,
-            'thumb' => $variants['thumb'],
-            'cover' => $variants['cover'],
-        ];
+        return $this->ingest($absolutePath, $folder, $baseName, $disk);
     }
 
     /**
@@ -64,7 +52,6 @@ final class ImageIngestor
         string $prefix = 'img',
         string $disk = 'public',
     ): array {
-        $folder = trim($folder, '/');
         $cleanPrefix = preg_replace('/[^a-zA-Z0-9_-]/', '_', $prefix) ?: 'img';
         $baseName = $cleanPrefix.'_'.now()->timestamp;
 
@@ -73,12 +60,22 @@ final class ImageIngestor
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
 
-        $originalRel = $this->persistOriginal($real, $folder, $baseName, $disk);
+        return $this->ingest($real, $folder, $baseName, $disk);
+    }
+
+    /**
+     * @return array{original: ?string, thumb: ?string, cover: ?string}
+     */
+    private function ingest(string $absolutePath, string $folder, string $baseName, string $disk): array
+    {
+        $folder = trim($folder, '/');
+
+        $originalRel = $this->persistOriginal($absolutePath, $folder, $baseName, $disk);
         if ($originalRel === null) {
             return ['original' => null, 'thumb' => null, 'cover' => null];
         }
 
-        $variants = $this->generateVariants($real, $folder, $baseName, $disk);
+        $variants = $this->generateVariants($absolutePath, $folder, $baseName, $disk);
 
         return [
             'original' => $originalRel,
