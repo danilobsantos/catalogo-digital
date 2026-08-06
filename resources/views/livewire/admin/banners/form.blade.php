@@ -61,10 +61,28 @@
                       class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400] transition"></textarea>
         </div>
 
+        <div class="grid gap-4 md:grid-cols-1">
+            <div>
+                <label class="text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">Alt da Imagem (SEO)</label>
+                <input type="text" wire:model="image_alt" maxlength="160" placeholder="Ex: Banner coleção verão 2026"
+                       class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400] transition">
+            </div>
+        </div>
+
         <div class="grid gap-4 md:grid-cols-3">
             <div>
                 <label class="text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">Texto Botão CTA</label>
                 <input type="text" wire:model="cta_label" maxlength="64" placeholder="Ex: Ver Coleção"
+                       class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400] transition">
+            </div>
+            <div>
+                <label class="text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">URL do CTA</label>
+                <input type="text" wire:model="cta_url" maxlength="255" placeholder="https://... ou /produtos"
+                       class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400] transition">
+            </div>
+            <div>
+                <label class="text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">Rota do CTA</label>
+                <input type="text" wire:model="cta_route_name" maxlength="160" placeholder="public.products.index"
                        class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400] transition">
             </div>
             <div class="md:col-span-2">

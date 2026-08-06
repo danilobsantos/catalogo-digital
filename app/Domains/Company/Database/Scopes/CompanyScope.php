@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domains\Company\Database\Scopes;
 
 use App\Traits\CompanyContext;
-use App\Traits\HasCompanyScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
