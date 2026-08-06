@@ -80,7 +80,7 @@
     </header>
 
     {{-- Content --}}
-    <main class="mx-auto max-w-screen-2xl px-4 lg:px-8 py-8 lg:py-10">
+    <main class="mx-auto max-w-screen-2xl px-4 lg:px-8 py-6 lg:py-8">
         {{ $slot }}
     </main>
 
