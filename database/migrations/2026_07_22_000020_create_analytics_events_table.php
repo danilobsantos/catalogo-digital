@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamp('occurred_at')->useCurrent();
 
             $table->index(['company_id', 'event', 'occurred_at']);
-            $table->index(['event', 'payload']);
+            $table->index('event');
         });
     }
 
