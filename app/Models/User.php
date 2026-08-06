@@ -31,6 +31,7 @@ final class User extends Authenticatable implements HasMedia
         'name',
         'email',
         'password',
+        'whatsapp',
         'active_company_id',
     ];
 
@@ -50,7 +51,7 @@ final class User extends Authenticatable implements HasMedia
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'email', 'active_company_id'])
+            ->logOnly(['name', 'email', 'whatsapp', 'active_company_id'])
             ->logOnlyDirty()
             ->useLogName('user');
     }
