@@ -69,6 +69,7 @@
                             <p class="text-sm font-bold text-[#1C1915] truncate">{{ auth()->user()?->name }}</p>
                             <p class="text-xs text-[#736A5B] truncate">{{ auth()->user()?->email }}</p>
                         </div>
+                        <a href="{{ route('profile.edit') }}" class="block w-full text-left px-4 py-2.5 text-xs font-semibold text-[#544D42] hover:bg-[#FAFAF7] transition">Meu Perfil</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="block w-full text-left px-4 py-2.5 text-xs font-semibold text-rose-600 hover:bg-[#FAFAF7] transition">Sair do Sistema</button>

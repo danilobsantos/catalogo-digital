@@ -22,7 +22,7 @@ return [
     | Placeholders: {produto}, {codigo}, {url}
     */
     'whatsapp' => [
-        'number' => env('WHATSAPP_DEFAULT_NUMBER', '5535988160553'),
+        'number' => env('WHATSAPP_DEFAULT_NUMBER', ''),
         'message' => env(
             'WHATSAPP_DEFAULT_MESSAGE',
             'Olá! Tenho interesse no produto {produto} (cód. {codigo}).'

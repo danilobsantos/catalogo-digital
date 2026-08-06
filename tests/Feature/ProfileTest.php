@@ -20,6 +20,7 @@ test('profile information can be updated', function () {
         ->patch('/profile', [
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'whatsapp' => '5535988119922',
         ]);
 
     $response
@@ -30,7 +31,23 @@ test('profile information can be updated', function () {
 
     $this->assertSame('Test User', $user->name);
     $this->assertSame('test@example.com', $user->email);
+    $this->assertSame('5535988119922', $user->whatsapp);
     $this->assertNull($user->email_verified_at);
+});
+
+test('whatsapp must contain only digits with a valid length', function () {
+    $user = User::factory()->create(['whatsapp' => null]);
+
+    $this
+        ->actingAs($user)
+        ->patch('/profile', [
+            'name' => 'Test User',
+            'email' => $user->email,
+            'whatsapp' => '(35) 98811-9922',
+        ])
+        ->assertSessionHasErrors('whatsapp');
+
+    $this->assertNull($user->refresh()->whatsapp);
 });
 
 test('email verification status is unchanged when the email address is unchanged', function () {

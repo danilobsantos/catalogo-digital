@@ -28,6 +28,7 @@ final class UserFactory extends Factory
             'password' => self::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'active_company_id' => null,
+            'whatsapp' => fake()->numerify('55##########'),
         ];
     }
 
