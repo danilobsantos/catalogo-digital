@@ -24,25 +24,29 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         Relation::morphMap([
-            'user' => User::class,
-            'product' => Product::class,
-            'category' => Category::class,
-            'brand' => Brand::class,
-            'collection' => Collection::class,
-            'banner' => Banner::class,
-            // Fallback para mapeamentos legados ou limpos pelo MySQL (sem barra invertida)
-            'AppModelsUser' => User::class,
             'App\Models\User' => User::class,
-            'AppDomainsCatalogModelsProduct' => Product::class,
+            'AppModelsUser' => User::class,
+            'user' => User::class,
+
             'App\Domains\Catalog\Models\Product' => Product::class,
-            'AppDomainsCatalogModelsCategory' => Category::class,
+            'AppDomainsCatalogModelsProduct' => Product::class,
+            'product' => Product::class,
+
             'App\Domains\Catalog\Models\Category' => Category::class,
-            'AppDomainsCatalogModelsBrand' => Brand::class,
+            'AppDomainsCatalogModelsCategory' => Category::class,
+            'category' => Category::class,
+
             'App\Domains\Catalog\Models\Brand' => Brand::class,
-            'AppDomainsCatalogModelsCollection' => Collection::class,
+            'AppDomainsCatalogModelsBrand' => Brand::class,
+            'brand' => Brand::class,
+
             'App\Domains\Catalog\Models\Collection' => Collection::class,
-            'AppDomainsCatalogModelsBanner' => Banner::class,
+            'AppDomainsCatalogModelsCollection' => Collection::class,
+            'collection' => Collection::class,
+
             'App\Domains\Catalog\Models\Banner' => Banner::class,
+            'AppDomainsCatalogModelsBanner' => Banner::class,
+            'banner' => Banner::class,
         ]);
 
         $this->registerTenantAwareBindings();
