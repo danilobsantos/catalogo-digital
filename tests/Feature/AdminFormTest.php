@@ -46,6 +46,29 @@ it('cria produto via ProductForm', function (): void {
         ->and($product->has_ca)->toBeTrue();
 });
 
+it('salva tabela de numeração por checkboxes e medidas', function (): void {
+    $user = auth()->user();
+    $company = Company::find($user->active_company_id);
+
+    Livewire::test(ProductForm::class)
+        ->set('code', '8888')
+        ->set('name', 'Botina Tamanhos')
+        ->set('sizeChecks', ['37', '38', '39'])
+        ->set('sizeChartCsv', "37 - 24cm\n39 - 25cm")
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $product = Product::withoutCompanyScope()
+        ->where('code', '8888')
+        ->where('company_id', $company->id)
+        ->first();
+    expect($product->size_chart)->toBe([
+        '37' => '24cm',
+        '38' => null,
+        '39' => '25cm',
+    ]);
+});
+
 it('valida campos obrigatórios do ProductForm', function (): void {
     Livewire::test(ProductForm::class)
         ->set('code', '')
