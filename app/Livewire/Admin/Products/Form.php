@@ -79,11 +79,15 @@ final class Form extends Component
     public bool $is_active = true;
 
     /** Arrays */
+    public array $sizeChecks = [];
+
     public string $materialsCsv = '';
 
     public string $careCsv = '';
 
     public string $colorsCsv = '';
+
+    public string $sizeChartCsv = '';
 
     /** Field textuais extras */
     public string $manufacturing = '';
@@ -122,6 +126,8 @@ final class Form extends Component
             'is_new' => ['boolean'],
             'is_bestseller' => ['boolean'],
             'is_active' => ['boolean'],
+            'sizeChecks' => ['array'],
+            'sizeChartCsv' => ['nullable', 'string', 'max:800'],
             'newImages' => ['array', 'max:8'],
             'newImages.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
@@ -174,6 +180,14 @@ final class Form extends Component
         $this->careCsv = is_array($p->care_instructions) ? implode("\n", $p->care_instructions) : '';
         $this->colorsCsv = is_array($p->colors) ? implode(', ', $p->colors) : '';
 
+        $chart = is_array($p->size_chart) ? $p->size_chart : [];
+        $this->sizeChecks = array_map('strval', array_keys($chart));
+        $this->sizeChartCsv = implode("\n", array_map(
+            fn (string $size, mixed $cm): string => $cm === null || $cm === '' ? $size : $size.' - '.$cm,
+            array_keys($chart),
+            array_values($chart),
+        ));
+
         $specs = is_array($p->specs) ? $p->specs : [];
         $this->manufacturing = (string) ($specs['processo_fabricacao'] ?? '');
 
@@ -225,6 +239,7 @@ final class Form extends Component
             'materials' => $this->splitCsv($this->materialsCsv),
             'care_instructions' => $this->splitLines($this->careCsv, 8),
             'colors' => $this->splitCsv($this->colorsCsv),
+            'size_chart' => $this->buildSizeChart(),
             'published_at' => now(),
         ];
 
@@ -246,6 +261,36 @@ final class Form extends Component
         $base = Str::slug($this->name);
 
         return $base.'-'.Str::slug($this->code).($this->variant_code ? '-'.Str::slug($this->variant_code) : '');
+    }
+
+    /** @return array<string, string|null>|null */
+    private function buildSizeChart(): ?array
+    {
+        $chart = [];
+        foreach (preg_split('/\r?\n/u', $this->sizeChartCsv) ?: [] as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                continue;
+            }
+            if (preg_match('/^(\d{1,3})\s*[-:]\s*(.+)$/u', $line, $m)) {
+                $chart[$m[1]] = trim($m[2]);
+            }
+        }
+
+        foreach ($this->sizeChecks as $size) {
+            $size = (string) $size;
+            if (! isset($chart[$size])) {
+                $chart[$size] = null;
+            }
+        }
+
+        if ($chart === []) {
+            return null;
+        }
+
+        ksort($chart, SORT_NUMERIC);
+
+        return $chart;
     }
 
     /** @return array<int, string>|null */

@@ -202,7 +202,9 @@
                             @foreach ($product->size_chart as $size => $cm)
                                 <div class="rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-2.5 py-2">
                                     <p class="text-[10px] font-bold uppercase text-[#736A5B]">Tam {{ $size }}</p>
-                                    <p class="text-xs font-bold text-[#1C1915] mt-0.5">{{ $cm }}</p>
+                                    @if ($cm !== null && $cm !== '')
+                                        <p class="text-xs font-bold text-[#1C1915] mt-0.5">{{ $cm }}</p>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
