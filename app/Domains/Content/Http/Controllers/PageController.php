@@ -12,7 +12,7 @@ final class PageController
 {
     public function show(Page $page, MarkdownRenderer $renderer): View
     {
-        abort_unless($page->is_active, 404);
+        abort_unless($page->is_active || auth()->check(), 404);
 
         return view('public.content.show', [
             'page' => $page,

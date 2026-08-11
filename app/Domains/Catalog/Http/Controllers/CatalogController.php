@@ -14,7 +14,7 @@ final class CatalogController
 {
     public function show(Product $product): View
     {
-        abort_unless($product->is_active, 404);
+        abort_unless($product->is_active || auth()->check(), 404);
 
         $product->loadMissing('images', 'category', 'brand', 'collection');
 

@@ -109,16 +109,22 @@
                             @endif
                         </td>
                         <td class="px-4 py-3.5 text-center">
-                            @if ($product->is_active)
-                                <span class="inline-block rounded-full bg-emerald-50 border border-emerald-200 text-[#047857] px-2.5 py-0.5 text-[10px] font-bold">Ativo</span>
-                            @else
-                                <span class="inline-block rounded-full bg-neutral-100 border border-neutral-200 text-[#736A5B] px-2.5 py-0.5 text-[10px] font-semibold">Inativo</span>
-                            @endif
+                            <button type="button" wire:click="toggleActive({{ $product->id }})" title="Clique para alternar status">
+                                @if ($product->is_active)
+                                    <span class="inline-block rounded-full bg-emerald-50 border border-emerald-200 text-[#047857] px-2.5 py-0.5 text-[10px] font-bold hover:bg-emerald-100 transition cursor-pointer">Ativo</span>
+                                @else
+                                    <span class="inline-block rounded-full bg-amber-50 border border-amber-300 text-amber-800 px-2.5 py-0.5 text-[10px] font-bold hover:bg-amber-100 transition cursor-pointer">Inativo (clique p/ ativar)</span>
+                                @endif
+                            </button>
                         </td>
                         <td class="px-4 py-3.5 text-right">
                             <div class="flex items-center justify-end gap-3">
                                 <a href="{{ route('public.products.show', $product->slug) }}" target="_blank"
                                    class="text-xs font-semibold text-[#736A5B] hover:text-[#1C1915] transition">Ver ↗</a>
+                                <button type="button" wire:click="toggleActive({{ $product->id }})"
+                                        class="text-xs font-bold {{ $product->is_active ? 'text-amber-700 hover:underline' : 'text-emerald-700 hover:underline font-extrabold' }}">
+                                    {{ $product->is_active ? 'Inativar' : 'Ativar' }}
+                                </button>
                                 <a href="{{ route('admin.products.edit', $product) }}"
                                    class="text-xs font-bold text-[#ff8400] hover:underline">Editar</a>
                                 <button wire:click="delete({{ $product->id }})" wire:confirm="Tem certeza que deseja remover este produto?"
