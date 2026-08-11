@@ -184,9 +184,10 @@
                             @endforeach
                         </div>
                         <label class="mt-3 block text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">Medidas (opcional, uma por linha)</label>
-                        <textarea wire:model="sizeChartCsv" rows="3"
-                                  placeholder="37 - 24cm&#10;38 - 24,5cm"
-                                  class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400]"></textarea>
+                        <p class="mt-0.5 text-[11px] text-[#736A5B]">Informe o número e a medida correspondente (ex: <code class="bg-[#FAF6F0] px-1.5 py-0.5 rounded text-[#ff8400] font-mono">20 - 13,0 CM</code> ou <code class="bg-[#FAF6F0] px-1.5 py-0.5 rounded text-[#ff8400] font-mono">21 - 13,5 CM</code>).</p>
+                        <textarea wire:model="sizeChartCsv" rows="6"
+                                  placeholder="20 - 13,0 CM&#10;21 - 13,5 CM&#10;22 - 14,0 CM"
+                                  class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-mono font-medium text-[#1C1915] focus:border-[#ff8400]"></textarea>
                     </div>
 
                     <div>

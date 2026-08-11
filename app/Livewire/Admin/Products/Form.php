@@ -277,8 +277,10 @@ final class Form extends Component
             if ($line === '') {
                 continue;
             }
-            if (preg_match('/^(\d{1,3})\s*[-:]\s*(.+)$/u', $line, $m)) {
-                $chart[$m[1]] = trim($m[2]);
+            if (preg_match('/^(\d{1,3})(?:\s*(?:[\-:\x{2013}\x{2014}\x{2212}]|\p{Pd})?\s*(.+))?$/u', $line, $m)) {
+                $size = $m[1];
+                $measure = isset($m[2]) && trim($m[2]) !== '' ? trim($m[2]) : null;
+                $chart[$size] = $measure;
             }
         }
 
@@ -294,6 +296,8 @@ final class Form extends Component
         }
 
         ksort($chart, SORT_NUMERIC);
+
+        $this->sizeChecks = array_map('strval', array_keys($chart));
 
         return $chart;
     }

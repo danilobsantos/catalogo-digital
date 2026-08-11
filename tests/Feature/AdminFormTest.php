@@ -113,3 +113,26 @@ it('garante slug único ao editar categoria', function (): void {
     $component->set('slug', 'original');
     $component->call('save')->assertHasErrors(['slug']);
 });
+
+it('suporta travessão unicode e en-dash na tabela de medidas', function (): void {
+    $user = auth()->user();
+    $company = Company::find($user->active_company_id);
+
+    Livewire::test(ProductForm::class)
+        ->set('code', '7777')
+        ->set('name', 'Botina Medidas Unicode')
+        ->set('sizeChartCsv', "20 – 13,0 CM\n21 - 13,5 CM\n22 — 14,0 CM")
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $product = Product::withoutCompanyScope()
+        ->where('code', '7777')
+        ->where('company_id', $company->id)
+        ->first();
+
+    expect($product->size_chart)->toBe([
+        '20' => '13,0 CM',
+        '21' => '13,5 CM',
+        '22' => '14,0 CM',
+    ]);
+});
