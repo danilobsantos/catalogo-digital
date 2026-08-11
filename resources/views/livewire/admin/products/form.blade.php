@@ -272,8 +272,7 @@
                         ['has_ca', 'Possui C.A. de Segurança'],
                     ] as [$field, $label])
                         <label class="flex items-center gap-2.5 text-xs font-medium text-[#28231C] cursor-pointer">
-                            <input type="checkbox"
-                                   @if ($field === 'has_ca') wire:model.live="has_ca" @else wire:model="{{ $field }}" @endif
+                            <input type="checkbox" wire:model.live="{{ $field }}"
                                    class="rounded border-[#E6E1D5] text-[#ff8400] focus:ring-[#ff8400]">
                             <span>{{ $label }}</span>
                         </label>

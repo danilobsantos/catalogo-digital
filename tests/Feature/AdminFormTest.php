@@ -136,3 +136,29 @@ it('suporta travessão unicode e en-dash na tabela de medidas', function (): voi
         '22' => '14,0 CM',
     ]);
 });
+
+it('desmarca is_featured e is_new ao salvar produto no ProductForm', function (): void {
+    $user = auth()->user();
+    $company = Company::find($user->active_company_id);
+
+    $product = Product::create([
+        'company_id' => $company->id,
+        'code' => '6666',
+        'slug' => 'botina-destaque-6666',
+        'name' => 'Botina Destaque',
+        'is_featured' => true,
+        'is_new' => true,
+        'is_active' => true,
+        'published_at' => now(),
+    ]);
+
+    Livewire::test(ProductForm::class, ['product' => $product])
+        ->set('is_featured', false)
+        ->set('is_new', false)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $product->refresh();
+    expect($product->is_featured)->toBeFalse()
+        ->and($product->is_new)->toBeFalse();
+});
