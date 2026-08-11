@@ -110,7 +110,7 @@ final class Form extends Component
             'slug' => ['nullable', 'string', 'max:200', Rule::unique('products')->ignore($this->product?->id)
                 ->where('company_id', $companyId)],
             'subtitle' => ['nullable', 'string', 'max:160'],
-            'short_description' => ['nullable', 'string', 'max:300'],
+            'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('company_id', $companyId)],
             'collection_id' => ['nullable', 'integer', Rule::exists('collections', 'id')->where('company_id', $companyId)],

@@ -162,3 +162,28 @@ it('desmarca is_featured e is_new ao salvar produto no ProductForm', function ()
     expect($product->is_featured)->toBeFalse()
         ->and($product->is_new)->toBeFalse();
 });
+
+it('salva checkbox mesmo com short_description longa', function (): void {
+    $user = auth()->user();
+    $company = Company::find($user->active_company_id);
+
+    $product = Product::create([
+        'company_id' => $company->id,
+        'code' => '5555',
+        'slug' => 'botina-longa-5555',
+        'name' => 'Botina Descrição Longa',
+        'short_description' => str_repeat('Texto de resumo que excede o antigo limite de 300 caracteres. ', 8),
+        'is_featured' => false,
+        'is_active' => true,
+        'published_at' => now(),
+    ]);
+    expect(strlen($product->short_description))->toBeGreaterThan(300);
+
+    Livewire::test(ProductForm::class, ['product' => $product])
+        ->set('is_featured', true)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $product->refresh();
+    expect($product->is_featured)->toBeTrue();
+});

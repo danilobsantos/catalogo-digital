@@ -29,6 +29,17 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-800">
+            <p class="mb-1">Não foi possível salvar. Corrija os erros abaixo:</p>
+            <ul class="list-disc pl-4 space-y-0.5">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form wire:submit="save" class="grid gap-6 lg:grid-cols-3">
         {{-- Coluna principal --}}
         <section class="lg:col-span-2 rounded-2xl border border-[#E6E1D5] bg-white overflow-hidden shadow-xs">
@@ -117,8 +128,9 @@
 
                     <div>
                         <label class="text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">Descrição Curta (Resumo nos Cards)</label>
-                        <textarea wire:model="short_description" maxlength="300" rows="2"
+                        <textarea wire:model="short_description" rows="2"
                                   class="mt-1.5 w-full rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-3.5 py-2 text-xs font-medium text-[#1C1915] focus:border-[#ff8400]"></textarea>
+                        @error('short_description') <p class="mt-1 text-xs text-rose-600 font-semibold">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
