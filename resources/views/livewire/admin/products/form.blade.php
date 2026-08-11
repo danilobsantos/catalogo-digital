@@ -175,7 +175,7 @@
                         <label class="text-[11px] font-bold uppercase tracking-wider text-[#736A5B]">Tabela de Numeração & Medidas (cm)</label>
                         <p class="mt-1 text-[11px] text-[#736A5B]">Marque os tamanhos disponíveis e, opcionalmente, informe a medida de cada um.</p>
                         <div class="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2">
-                            @foreach (range(33, 46) as $size)
+                            @foreach (range(20, 46) as $size)
                                 <label class="flex items-center gap-1.5 rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-2.5 py-2 text-xs font-semibold text-[#544D42] cursor-pointer has-[:checked]:border-[#ff8400] has-[:checked]:bg-[#FAF6F0] has-[:checked]:text-[#ff8400] transition">
                                     <input type="checkbox" value="{{ $size }}" wire:model="sizeChecks"
                                            class="rounded border-[#E6E1D5] text-[#ff8400] focus:ring-[#ff8400]">
