@@ -69,6 +69,9 @@ final class ImageIngestor
     private function ingest(string $absolutePath, string $folder, string $baseName, string $disk): array
     {
         $folder = trim($folder, '/');
+        if ($folder !== '') {
+            Storage::disk($disk)->makeDirectory($folder);
+        }
 
         $originalRel = $this->persistOriginal($absolutePath, $folder, $baseName, $disk);
         if ($originalRel === null) {

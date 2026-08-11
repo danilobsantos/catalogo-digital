@@ -200,6 +200,11 @@ final class Form extends Component
             'newImages' => ['array', 'max:8'],
             'newImages.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
+
+        if ($this->product?->exists) {
+            $this->ingestUploads();
+            session()->flash('flash.success', 'Imagem(ns) salva(s) na galeria do produto.');
+        }
     }
 
     public function madeSlug(): void
@@ -356,6 +361,7 @@ final class Form extends Component
         }
 
         $this->newImages = [];
+        $this->product->unsetRelation('images');
     }
 
     public function deleteImage(int $id): void
