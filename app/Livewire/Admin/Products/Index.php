@@ -69,6 +69,15 @@ final class Index extends Component
         $this->resetPage();
     }
 
+    public function toggleActive(int $productId): void
+    {
+        $product = Product::findOrFail($productId);
+        $product->update(['is_active' => ! $product->is_active]);
+
+        $status = $product->is_active ? 'ativado' : 'inativado';
+        session()->flash('flash.success', "Produto \"{$product->name}\" {$status} com sucesso.");
+    }
+
     public function delete(int $productId): void
     {
         $product = Product::findOrFail($productId);
