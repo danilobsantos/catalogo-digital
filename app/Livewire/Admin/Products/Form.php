@@ -250,15 +250,16 @@ final class Form extends Component
 
         if ($this->product?->exists) {
             $this->product->update($payload);
+            $this->product->refresh();
+            $this->fillFromProduct();
+            $this->ingestUploads();
+            session()->flash('flash.success', 'Produto atualizado com sucesso.');
         } else {
             $this->product = Product::create($payload);
+            $this->ingestUploads();
+            session()->flash('flash.success', 'Produto criado com sucesso.');
+            $this->redirectRoute('admin.products.edit', $this->product, navigate: true);
         }
-
-        $this->ingestUploads();
-
-        session()->flash('flash.success', 'Produto salvo com sucesso.');
-
-        $this->redirectRoute('admin.products.edit', $this->product, navigate: true);
     }
 
     private function autoSlug(): string
