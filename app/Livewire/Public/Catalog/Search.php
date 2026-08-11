@@ -107,10 +107,10 @@ final class Search extends Component
         $products = Product::query()
             ->with('images')
             ->when($this->q !== '', fn ($qBuilder) => $qBuilder->where(function ($qq) {
-                $qq->where('name', 'ILIKE', '%'.$this->q.'%')
-                    ->orWhere('short_description', 'ILIKE', '%'.$this->q.'%')
-                    ->orWhere('description', 'ILIKE', '%'.$this->q.'%')
-                    ->orWhere('code', 'ILIKE', '%'.$this->q.'%');
+                $qq->where('name', 'like', '%'.$this->q.'%')
+                    ->orWhere('short_description', 'like', '%'.$this->q.'%')
+                    ->orWhere('description', 'like', '%'.$this->q.'%')
+                    ->orWhere('code', 'like', '%'.$this->q.'%');
             }))
             ->when($this->category !== '', function ($qq) {
                 $qq->whereHas('category', fn ($q) => $q->where('slug', $this->category));
@@ -118,8 +118,8 @@ final class Search extends Component
             ->when($this->collection !== '', function ($qq) {
                 $qq->whereHas('collection', fn ($q) => $q->where('slug', $this->collection));
             })
-            ->when($this->leather !== '', fn ($qq) => $qq->where('leather', 'ILIKE', $this->leather))
-            ->when($this->sole !== '', fn ($qq) => $qq->where('sole', 'ILIKE', $this->sole))
+            ->when($this->leather !== '', fn ($qq) => $qq->where('leather', 'like', $this->leather))
+            ->when($this->sole !== '', fn ($qq) => $qq->where('sole', 'like', $this->sole))
             ->when($this->hasCa, fn ($qq) => $qq->where('has_ca', true))
             ->when($this->onlyNew, fn ($qq) => $qq->where('is_new', true))
             ->when($this->onlyFeatured, fn ($qq) => $qq->where('is_featured', true))

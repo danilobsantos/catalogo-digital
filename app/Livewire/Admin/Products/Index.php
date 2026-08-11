@@ -82,9 +82,9 @@ final class Index extends Component
         $products = Product::query()
             ->with(['images', 'category', 'collection'])
             ->when($this->search !== '', fn ($q) => $q->where(function ($qq): void {
-                $qq->where('name', 'ILIKE', '%'.$this->search.'%')
-                    ->orWhere('code', 'ILIKE', '%'.$this->search.'%')
-                    ->orWhere('slug', 'ILIKE', '%'.$this->search.'%');
+                $qq->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('code', 'like', '%'.$this->search.'%')
+                    ->orWhere('slug', 'like', '%'.$this->search.'%');
             }))
             ->when($this->categoryId, fn ($q) => $q->where('category_id', $this->categoryId))
             ->when($this->collectionId, fn ($q) => $q->where('collection_id', $this->collectionId))
