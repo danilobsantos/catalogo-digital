@@ -136,13 +136,25 @@
                 {{-- Badges --}}
                 <div class="mt-5 flex flex-wrap gap-2">
                     @if ($product->has_ca)
+                        @php
+                            $caNum = trim((string) ($product->ca_number ?: (is_numeric($product->approvals) ? $product->approvals : '')));
+                        @endphp
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6F0] border border-[#D97706]/30 text-[#D97706] px-3.5 py-1 text-xs font-bold">
                             <svg class="size-3.5 fill-current" viewBox="0 0 20 20"><path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm-1-11a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0V7Zm1 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>
-                            C.A. nº {{ $product->approvals }}
+                            @if ($caNum !== '')
+                                C.A. {{ $caNum }}
+                            @else
+                                Certificado de Aprovação (CA)
+                            @endif
                         </span>
                     @endif
                     @if ($product->is_new)
                         <span class="rounded-full bg-[#c25e38] text-white px-3.5 py-1 text-xs font-bold uppercase tracking-wider">Lançamento</span>
+                    @endif
+                    @if (\App\Helpers\EmbroideryHelper::hasEmbroidery($product))
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-[#FAF6F0] border border-[#E6E1D5] text-[#736A5B] px-3.5 py-1 text-xs font-bold">
+                            <span class="text-sm"></span>Bordado
+                        </span>
                     @endif
                     @if ($product->collection)
                         <span class="rounded-full bg-[#F4F1EA] text-[#3D372E] border border-[#E6E1D5] px-3.5 py-1 text-xs font-semibold">{{ $product->collection->name }}</span>
@@ -155,6 +167,7 @@
                     <dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-xs sm:text-sm">
                         @foreach (array_filter([
                             'Couro / Cabedal' => $product->leather,
+                            'Cores Disponíveis' => ($product->colors && count($product->colors) > 0) ? implode(', ', $product->colors) : null,
                             'Tipo de Solado' => $product->sole,
                             'Fechamento' => $product->closure,
                             'Biqueira / Bico' => $product->toe_cap,
@@ -183,8 +196,8 @@
             </div>
         </div>
 
-        {{-- Detalhes Adicionais (Descrição, Medidas, Materiais e Cuidados) --}}
-        @if ($product->description || ($product->size_chart && count($product->size_chart) > 0) || ($product->materials && count($product->materials) > 0) || ($product->care_instructions && count($product->care_instructions) > 0))
+        {{-- Detalhes Adicionais (Descrição, Cores/Swatches, Medidas, Materiais e Cuidados) --}}
+        @if ($product->description || ($product->colors && count($product->colors) > 0) || ($product->size_chart && count($product->size_chart) > 0) || ($product->materials && count($product->materials) > 0) || ($product->care_instructions && count($product->care_instructions) > 0))
             <div class="mt-8 lg:mt-12 bg-white rounded-3xl border border-[#E6E1D5] p-6 sm:p-10 shadow-sm space-y-10">
                 {{-- Descrição detalhada --}}
                 @if ($product->description)
@@ -194,10 +207,191 @@
                     </section>
                 @endif
 
+                {{-- Cores e Variações de Couro Disponíveis --}}
+                @php
+                    $leatherGroups = \App\Helpers\LeatherSwatchHelper::getGroupedSwatches($product->leather, $product->colors);
+                @endphp
+                @if (count($leatherGroups) > 0)
+                    <section class="pt-8 border-t border-[#F4F1EA]" x-data="{ modalOpen: false, modalTitle: '', modalImage: '', modalHex: '#736a5b' }">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                            <div>
+                                <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-[#1C1915]">Cores & Couros Disponíveis</h2>
+                                <p class="text-xs text-[#736A5B] mt-0.5">Mostruário oficial de tonalidades e texturas reais para este modelo</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            @foreach ($leatherGroups as $groupName => $swatches)
+                                <div class="bg-[#FAFAF7] rounded-3xl p-5 sm:p-7 border border-[#E6E1D5]">
+                                    <div class="flex items-center gap-2.5 mb-6 pb-4 border-b border-[#E6E1D5]">
+                                        <span class="size-2.5 rounded-full bg-[#ff8400]"></span>
+                                        <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1C1915]">
+                                            Couro {{ $groupName }}
+                                        </h3>
+                                        <span class="text-[10px] font-semibold text-[#736A5B] bg-white px-2.5 py-0.5 rounded-full border border-[#E6E1D5] ml-auto">
+                                            {{ count($swatches) }} {{ count($swatches) === 1 ? 'opção' : 'opções' }}
+                                        </span>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
+                                        @foreach ($swatches as $swatch)
+                                            <div class="group relative rounded-2xl border border-[#E6E1D5] bg-white p-3 transition-all duration-200 hover:border-[#ff8400] hover:shadow-md cursor-pointer flex flex-col justify-between"
+                                                 @click="modalTitle = '{{ $swatch['name'] }} ({{ $swatch['leather'] }})'; modalImage = '{{ $swatch['image_url'] ?? '' }}'; modalHex = '{{ $swatch['hex'] }}'; modalOpen = true">
+                                                <div class="aspect-square w-full overflow-hidden rounded-xl bg-[#FAF6F0] border border-[#E6E1D5] relative flex items-center justify-center">
+                                                    @if ($swatch['image_url'])
+                                                        <img src="{{ $swatch['image_url'] }}"
+                                                             alt="Amostra de couro {{ $swatch['name'] }}"
+                                                             loading="lazy"
+                                                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                                                            <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 text-[#1C1915] text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                                                                <svg class="size-3 text-[#ff8400]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                                                Ver textura
+                                                            </span>
+                                                        </div>
+                                                    @else
+                                                        <div class="size-12 rounded-full border border-black/10 shadow-xs" style="background-color: {{ $swatch['hex'] }}"></div>
+                                                    @endif
+                                                </div>
+                                                <div class="mt-2.5 text-center">
+                                                    <p class="text-xs font-bold text-[#1C1915] group-hover:text-[#ff8400] transition-colors">{{ $swatch['name'] }}</p>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        {{-- Modal Lightbox para visualização da textura em alta definição --}}
+                        <div x-show="modalOpen"
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             @keydown.escape.window="modalOpen = false"
+                             class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm">
+                            <div class="relative max-w-md sm:max-w-xl md:max-w-2xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#E6E1D5] max-h-[94vh] flex flex-col"
+                                 @click.outside="modalOpen = false"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="scale-95 opacity-0"
+                                 x-transition:enter-end="scale-100 opacity-100">
+                                <div class="flex items-center justify-between pb-3.5 border-b border-[#F4F1EA]">
+                                    <div>
+                                        <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold text-[#ff8400]">Amostra Real</p>
+                                        <h3 class="font-display font-bold text-lg sm:text-2xl text-[#1C1915] mt-0.5" x-text="modalTitle"></h3>
+                                    </div>
+                                    <button type="button" @click="modalOpen = false" class="size-9 rounded-full bg-[#F4F1EA] text-[#544D42] hover:bg-[#E6E1D5] flex items-center justify-center font-bold text-sm transition-colors cursor-pointer">
+                                        ✕
+                                    </button>
+                                </div>
+                                <div class="mt-4 sm:mt-5 aspect-square rounded-2xl overflow-hidden bg-[#FAFAF7] border border-[#E6E1D5] flex items-center justify-center flex-1 max-h-[68vh]">
+                                    <template x-if="modalImage">
+                                        <img :src="modalImage" :alt="modalTitle" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!modalImage">
+                                        <div class="size-36 sm:size-48 rounded-full border border-black/10 shadow-sm" :style="'background-color: ' + modalHex"></div>
+                                    </template>
+                                </div>
+                                <p class="mt-3.5 text-center text-xs sm:text-sm text-[#736A5B]">Tonalidade e textura real do couro utilizado na fabricação</p>
+                            </div>
+                        </div>
+                    </section>
+                @endif
+
+                {{-- Opções de Bordados Disponíveis --}}
+                @php
+                    $embroideryOptions = \App\Helpers\EmbroideryHelper::getOptionsForProduct($product);
+                @endphp
+                @if (count($embroideryOptions) > 0)
+                    <section class="pt-8 border-t border-[#F4F1EA]" x-data="{ modalOpen: false, modalTitle: '', modalSubtitle: '', modalImage: '' }">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+                            <div>
+                                <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-[#1C1915]">Opções de Bordados Disponíveis</h2>
+                                <p class="text-xs text-[#736A5B] mt-0.5">Modelos e desenhos de bordados disponíveis para personalização deste calçado</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#FAFAF7] rounded-3xl p-5 sm:p-7 border border-[#E6E1D5]">
+                            <div class="flex items-center gap-2.5 mb-6 pb-4 border-b border-[#E6E1D5]">
+                                <span class="size-2.5 rounded-full bg-[#ff8400]"></span>
+                                <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1C1915]">
+                                    Desenhos & Pespontos
+                                </h3>
+                                <span class="text-[10px] font-semibold text-[#736A5B] bg-white px-2.5 py-0.5 rounded-full border border-[#E6E1D5] ml-auto">
+                                    {{ count($embroideryOptions) }} {{ count($embroideryOptions) === 1 ? 'opção' : 'opções' }}
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
+                                @foreach ($embroideryOptions as $emb)
+                                    <div class="group relative rounded-2xl border border-[#E6E1D5] bg-white p-3 transition-all duration-200 hover:border-[#ff8400] hover:shadow-md cursor-pointer flex flex-col justify-between"
+                                         @click="modalOpen = true; modalTitle = '{{ $emb['title'] }}'; modalSubtitle = '{{ $emb['subtitle'] }}'; modalImage = '{{ $emb['image_url'] }}'">
+                                        <div class="aspect-square w-full overflow-hidden rounded-xl bg-[#FAF6F0] border border-[#E6E1D5] relative flex items-center justify-center">
+                                            <img src="{{ $emb['image_url'] }}"
+                                                 alt="{{ $emb['title'] }}"
+                                                 loading="lazy"
+                                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                                                <span class="opacity-0 group-hover:opacity-100 transition-opacity bg-white/95 text-[#1C1915] text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                                                    <svg class="size-3 text-[#ff8400]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
+                                                    Ver detalhe
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2.5 text-center">
+                                            <p class="text-xs font-bold text-[#1C1915] group-hover:text-[#ff8400] transition-colors">{{ $emb['title'] }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        {{-- Modal Lightbox de Bordado --}}
+                        <div x-show="modalOpen"
+                             x-cloak
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             @keydown.escape.window="modalOpen = false"
+                             class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm">
+                            <div class="relative max-w-md sm:max-w-xl md:max-w-2xl w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#E6E1D5] max-h-[94vh] flex flex-col"
+                                 @click.outside="modalOpen = false"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="scale-95 opacity-0"
+                                 x-transition:enter-end="scale-100 opacity-100">
+                                <div class="flex items-center justify-between pb-3.5 border-b border-[#F4F1EA]">
+                                    <div>
+                                        <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold text-[#ff8400]">Personalização</p>
+                                        <h3 class="font-display font-bold text-lg sm:text-2xl text-[#1C1915] mt-0.5" x-text="modalTitle"></h3>
+                                        <p class="text-xs sm:text-sm text-[#736A5B] mt-0.5" x-text="modalSubtitle"></p>
+                                    </div>
+                                    <button type="button" @click="modalOpen = false" class="size-9 rounded-full bg-[#F4F1EA] text-[#544D42] hover:bg-[#E6E1D5] flex items-center justify-center font-bold text-sm transition-colors cursor-pointer">
+                                        ✕
+                                    </button>
+                                </div>
+                                <div class="mt-4 sm:mt-5 aspect-square rounded-2xl overflow-hidden bg-[#FAFAF7] border border-[#E6E1D5] flex items-center justify-center flex-1 max-h-[68vh]">
+                                    <img :src="modalImage" :alt="modalTitle" class="w-full h-full object-cover">
+                                </div>
+                                <p class="mt-3.5 text-center text-xs sm:text-sm text-[#736A5B]">Detalhe da costura e acabamento do bordado no cano do calçado</p>
+                            </div>
+                        </div>
+                    </section>
+                @endif
+
                 {{-- Tabela de medidas --}}
                 @if ($product->size_chart && count($product->size_chart) > 0)
                     <section class="pt-8 border-t border-[#F4F1EA]">
-                        <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-[#1C1915] mb-4">Tabela de Numeração & Medidas (cm)</h2>
+                        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-4">
+                            <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-[#1C1915]">Tabela de Numeração & Medidas (cm)</h2>
+                            <p class="text-xs text-[#736A5B] font-medium">* Medidas em centímetros (cm) referentes ao comprimento da sola do calçado.</p>
+                        </div>
                         <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2.5 text-center">
                             @foreach ($product->size_chart as $size => $cm)
                                 <div class="rounded-xl border border-[#E6E1D5] bg-[#FAFAF7] px-2.5 py-2">
