@@ -233,11 +233,11 @@ final class SyncProductVariations extends Command
         // PRODUTOS COM VARIAÇÃO ESPECÍFICA NO BANCO
         '4047' => [
             'leather' => 'Nobuck',
-            'colors' => ['Camel'],
+            'colors' => ['Café', 'Camel', 'Ferrugem', 'Castor'],
         ],
         '4048' => [
             'leather' => 'Nobuck',
-            'colors' => ['Café'],
+            'colors' => ['Café', 'Camel', 'Ferrugem', 'Castor'],
         ],
         '7003' => [
             'leather' => 'Sintético',

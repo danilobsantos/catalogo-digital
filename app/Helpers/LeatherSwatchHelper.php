@@ -134,11 +134,6 @@ final class LeatherSwatchHelper
                 $colors = $colorsField ?? ['Preto'];
             }
 
-            // Se o produto tiver cores customizadas específicas (ex: 4047-2 Camel)
-            if (count($leatherTypes) === 1 && ! empty($colorsField) && count($colorsField) === 1) {
-                $colors = $colorsField;
-            }
-
             $swatches = [];
             foreach ($colors as $col) {
                 $swatches[] = self::getSwatchInfo($col, $lName);
