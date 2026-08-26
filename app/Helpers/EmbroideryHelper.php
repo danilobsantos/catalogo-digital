@@ -16,6 +16,10 @@ final class EmbroideryHelper
         '4040',
         '4041',
         '4042',
+    ];
+
+    /** @var list<string> */
+    private static array $infantilTexanaModels = [
         '6002',
         '6003',
     ];
@@ -40,7 +44,9 @@ final class EmbroideryHelper
     {
         $code = (string) $product->code;
 
-        if (in_array($code, self::$texanaModels, true) || in_array($code, self::$geralModels, true)) {
+        if (in_array($code, self::$texanaModels, true)
+            || in_array($code, self::$infantilTexanaModels, true)
+            || in_array($code, self::$geralModels, true)) {
             return true;
         }
 
@@ -69,6 +75,30 @@ final class EmbroideryHelper
     {
         $code = (string) $product->code;
 
+        // Modelos infantis texanos (6002 e 6003)
+        if (in_array($code, self::$infantilTexanaModels, true)) {
+            return [
+                [
+                    'code' => 'A',
+                    'title' => 'Bordado Padrão A',
+                    'subtitle' => 'Desenho decorativo no cano do calçado',
+                    'image_url' => asset('images/embroidery/infantil-texana-a.webp'),
+                ],
+            ];
+        }
+
+        // Modelo com bordado único específico
+        if ($code === '7005') {
+            return [
+                [
+                    'code' => 'A',
+                    'title' => 'Bordado Padrão A',
+                    'subtitle' => 'Desenho decorativo tradicional no cano',
+                    'image_url' => asset('images/embroidery/bordado-a.webp'),
+                ],
+            ];
+        }
+
         if (in_array($code, self::$texanaModels, true)) {
             return [
                 [
@@ -85,37 +115,37 @@ final class EmbroideryHelper
                 [
                     'code' => 'A',
                     'title' => 'Bordado Padrão A',
-                    'subtitle' => 'Desenho decorativo tradicional',
+                    'subtitle' => 'Desenho decorativo tradicional no cano',
                     'image_url' => asset('images/embroidery/bordado-a.webp'),
                 ],
                 [
                     'code' => 'B',
                     'title' => 'Bordado Padrão B',
-                    'subtitle' => 'Desenho estilizado geométrico',
+                    'subtitle' => 'Desenho estilizado geométrico no cano',
                     'image_url' => asset('images/embroidery/bordado-b.webp'),
                 ],
                 [
                     'code' => 'C',
                     'title' => 'Bordado Padrão C',
-                    'subtitle' => 'Pesponto trabalhado em curvas',
+                    'subtitle' => 'Pesponto trabalhado em curvas no cano',
                     'image_url' => asset('images/embroidery/bordado-c.webp'),
                 ],
                 [
                     'code' => 'D',
                     'title' => 'Bordado Padrão D',
-                    'subtitle' => 'Desenho decorativo clássico',
+                    'subtitle' => 'Desenho decorativo clássico no cano',
                     'image_url' => asset('images/embroidery/bordado-d.webp'),
                 ],
                 [
                     'code' => 'F',
                     'title' => 'Bordado Padrão F',
-                    'subtitle' => 'Desenho com detalhes estilizados',
+                    'subtitle' => 'Desenho com detalhes estilizados no cano',
                     'image_url' => asset('images/embroidery/bordado-f.webp'),
                 ],
                 [
                     'code' => 'G',
                     'title' => 'Bordado Padrão G',
-                    'subtitle' => 'Desenho harmônico completo',
+                    'subtitle' => 'Desenho harmônico completo no cano',
                     'image_url' => asset('images/embroidery/bordado-g.webp'),
                 ],
             ];
