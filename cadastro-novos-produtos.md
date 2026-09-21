@@ -55,6 +55,7 @@ Mapeamento, ingestão e estruturação dos 7 novos produtos fornecidos na pasta 
 - [x] **Sincronização Title Case:** Mapeados novos solados, couros e cores em `SyncProductVariations.php`.
 - [x] **Atualização do Modelo 7006:** Título, código e slug normalizados sem o sufixo de variante `/14` (`7006 BOTINA BIDIN RELAX SOLA DE BORRACHA`), e amostra de couro Bidin atualizada com o novo arquivo `7006/bidin.jpg`.
 - [x] **Atualização do Modelo 7012:** Foto da bota substituída pelo novo `7012.jpg`, textura atualizada para `7012 - couro camurça cor caramelo.png` e opções de bordado removidas.
+- [x] **Atualização do Modelo 7007:** Foto da bota substituída por `7007.jpg`, opção de couro configurada exclusivamente para `Nobuck Café` com amostra atualizada de `nobuk café.jpg`, e bordado configurado exclusivamente para `Bordado Padrão B` com a imagem oficial `borbado padrão B.jfif`.
 
 ---
 

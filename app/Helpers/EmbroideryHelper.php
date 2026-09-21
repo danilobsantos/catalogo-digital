@@ -92,6 +92,18 @@ final class EmbroideryHelper
             ];
         }
 
+        // Modelo 7007: Bordado Padrão B exclusivo
+        if ($code === '7007' || $baseCode === '7007') {
+            return [
+                [
+                    'code' => 'B',
+                    'title' => 'Bordado Padrão B',
+                    'subtitle' => 'Desenho estilizado bordado no cano',
+                    'image_url' => asset('images/embroidery/7007-bordado-b.webp'),
+                ],
+            ];
+        }
+
         // Modelos infantis texanos (6002 e 6003)
         if (in_array($code, self::$infantilTexanaModels, true) || in_array($baseCode, self::$infantilTexanaModels, true)) {
             return [

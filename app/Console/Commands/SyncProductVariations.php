@@ -261,7 +261,7 @@ final class SyncProductVariations extends Command
         ],
         '7007' => [
             'leather' => 'Nobuck',
-            'colors' => ['Café', 'Camel', 'Ferrugem', 'Castor'],
+            'colors' => ['Café'],
         ],
         '7010' => [
             'leather' => 'Nobuck',
