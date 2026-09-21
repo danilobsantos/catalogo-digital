@@ -35,6 +35,8 @@ final class EmbroideryHelper
         '5002',
         '5003',
         '7005',
+        '7007',
+        '7010',
     ];
 
     /**
@@ -43,10 +45,12 @@ final class EmbroideryHelper
     public static function hasEmbroidery(Product $product): bool
     {
         $code = (string) $product->code;
+        $baseCode = preg_replace('/-\d+$/', '', $code);
 
-        if (in_array($code, self::$texanaModels, true)
-            || in_array($code, self::$infantilTexanaModels, true)
-            || in_array($code, self::$geralModels, true)) {
+        if (in_array($code, self::$texanaModels, true) || in_array($baseCode, self::$texanaModels, true)
+            || in_array($code, self::$infantilTexanaModels, true) || in_array($baseCode, self::$infantilTexanaModels, true)
+            || in_array($code, self::$geralModels, true) || in_array($baseCode, self::$geralModels, true)
+            || $code === '7011' || $baseCode === '7011') {
             return true;
         }
 
@@ -74,9 +78,22 @@ final class EmbroideryHelper
     public static function getOptionsForProduct(Product $product): array
     {
         $code = (string) $product->code;
+        $baseCode = preg_replace('/-\d+$/', '', $code);
+
+        // Modelo 7011: Bordado Padrão A exclusivo
+        if ($code === '7011' || $baseCode === '7011') {
+            return [
+                [
+                    'code' => 'A',
+                    'title' => 'Bordado Padrão A',
+                    'subtitle' => 'Desenho decorativo bordado no cano',
+                    'image_url' => asset('images/embroidery/7011-bordado-a.webp'),
+                ],
+            ];
+        }
 
         // Modelos infantis texanos (6002 e 6003)
-        if (in_array($code, self::$infantilTexanaModels, true)) {
+        if (in_array($code, self::$infantilTexanaModels, true) || in_array($baseCode, self::$infantilTexanaModels, true)) {
             return [
                 [
                     'code' => 'A',
@@ -88,7 +105,7 @@ final class EmbroideryHelper
         }
 
         // Modelo com bordado único específico
-        if ($code === '7005') {
+        if ($code === '7005' || $baseCode === '7005') {
             return [
                 [
                     'code' => 'A',
@@ -99,7 +116,7 @@ final class EmbroideryHelper
             ];
         }
 
-        if (in_array($code, self::$texanaModels, true)) {
+        if (in_array($code, self::$texanaModels, true) || in_array($baseCode, self::$texanaModels, true)) {
             return [
                 [
                     'code' => 'TEXANA-A',
@@ -110,7 +127,7 @@ final class EmbroideryHelper
             ];
         }
 
-        if (in_array($code, self::$geralModels, true) || self::hasEmbroidery($product)) {
+        if (in_array($code, self::$geralModels, true) || in_array($baseCode, self::$geralModels, true) || self::hasEmbroidery($product)) {
             return [
                 [
                     'code' => 'A',

@@ -43,6 +43,11 @@ final class DocxProductParser
             $title = '7010'.substr($title, 4);
         }
 
+        if ($codeParts['code'] === '7006') {
+            $title = (string) preg_replace('/^7006\/\d+\s*/', '7006 ', $title);
+            $codeParts['variant'] = null;
+        }
+
         return new DocxProductDto(
             rawCode: $codeParts['code'],
             variantCode: $codeParts['variant'],

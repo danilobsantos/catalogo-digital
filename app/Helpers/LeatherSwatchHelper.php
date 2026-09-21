@@ -29,7 +29,12 @@ final class LeatherSwatchHelper
             'lisa' => ['file' => 'images/swatches/vaqueta/lisa.webp', 'hex' => '#1a1918'],
         ],
         'sintetico' => [
-            'island-caramelo' => ['file' => '', 'hex' => '#b87333'],
+            'preto' => ['file' => 'images/swatches/sintetico/preto.webp', 'hex' => '#1a1918'],
+            'bidin' => ['file' => 'images/swatches/sintetico/bidin.webp', 'hex' => '#1a1918'],
+            'cafe' => ['file' => 'images/swatches/sintetico/cafe.webp', 'hex' => '#432c1e'],
+            'caramelo' => ['file' => 'images/swatches/sintetico/caramelo.webp', 'hex' => '#b87333'],
+            'camurca-caramelo' => ['file' => 'images/swatches/sintetico/camurca-caramelo.webp', 'hex' => '#b87333'],
+            'island-caramelo' => ['file' => 'images/swatches/sintetico/island-caramelo.webp', 'hex' => '#b87333'],
         ],
     ];
 
@@ -49,7 +54,7 @@ final class LeatherSwatchHelper
             $leatherCategory = 'nobuck';
         } elseif (str_contains($normalizedLeather, 'vaqueta')) {
             $leatherCategory = 'vaqueta';
-        } elseif (str_contains($normalizedLeather, 'sintetico')) {
+        } elseif (str_contains($normalizedLeather, 'sintetico') || str_contains($normalizedLeather, 'bidin') || str_contains($normalizedLeather, 'camurca')) {
             $leatherCategory = 'sintetico';
         }
 
@@ -118,6 +123,8 @@ final class LeatherSwatchHelper
                 str_contains($normalized, 'vaqueta-e-bidin') => 'Vaqueta e Bidin',
                 str_contains($normalized, 'vaqueta') => 'Vaqueta',
                 str_contains($normalized, 'nobuck') => 'Nobuck',
+                str_contains($normalized, 'bidin') => 'Sintético Bidin',
+                str_contains($normalized, 'camurca') => 'Camurça Sintético',
                 str_contains($normalized, 'sintetico') => 'Sintético',
                 default => 'Látego',
             };
@@ -128,8 +135,12 @@ final class LeatherSwatchHelper
                 $colors = ['Café', 'Camel', 'Ferrugem', 'Castor'];
             } elseif (str_contains($normalized, 'vaqueta')) {
                 $colors = ['Preto'];
+            } elseif (str_contains($normalized, 'bidin')) {
+                $colors = ['Preto'];
+            } elseif (str_contains($normalized, 'camurca')) {
+                $colors = ['Caramelo'];
             } elseif (str_contains($normalized, 'sintetico')) {
-                $colors = ['Island Caramelo'];
+                $colors = ! empty($colorsField) ? $colorsField : ['Café'];
             } else {
                 $colors = $colorsField ?? ['Preto'];
             }

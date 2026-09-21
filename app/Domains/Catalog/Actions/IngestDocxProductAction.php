@@ -71,7 +71,6 @@ final class IngestDocxProductAction
                 [
                     'company_id' => $company->id,
                     'code' => $dto->rawCode,
-                    'variant_code' => $dto->variantCode,
                 ],
                 $payload,
             );

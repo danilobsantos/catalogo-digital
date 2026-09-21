@@ -26,15 +26,18 @@ Mapeamento, ingestão e estruturação dos 7 novos produtos fornecidos na pasta 
 
 ---
 
-## 3. Mapeamento de Ativos e Imagens
+## 3. Padronização Visual & Componentes Oficiais
 
-1. **7000 (Coturno Nobuck):** Capa `7000.webp` + Amostra de Couro `7000_nobuk_cafe.webp`
-2. **7001 (Coturno Látego):** Capa `7001.webp` + Amostra de Couro `7001_latego_chocolate.webp`
-3. **7007 (Botina Passeio Vaquejada Bordada):** Capa `7007.webp` + Amostra de Couro `7007_nobuk_cafe.webp` + Detalhe do Bordado Linhas B `7007_borbado_padrao_b.webp`
-4. **7006-14 (Bidin):** Capa `7006.webp` + Amostra de Sintético Bidin `7006_bidin.webp`
-5. **7010 (Infantil Texana Nobuck):** Capa `7010.webp` + Amostra de Couro `7010_nobuk_cafe.webp` + Detalhe do Bordado Texana A `7010_bordado_padrao_a.webp`
-6. **7011 (Sintético Infantil Texana):** Capa `7011.webp` + Amostra Sintético `7011_sintetico_cafe.webp` + Detalhe do Bordado Texana A `7011_bordado_padrao_a.webp`
-7. **7012 (Texana Camurça Caramelo):** Capa `7012.webp` + Amostra Camurça `7012_cor_camurca_caramelo.webp` + Detalhe do Bordado Texana A `7012_bordado_padrao_a.webp`
+1. **Galeria do Produto:** Apenas a foto do calçado (`cover`) é mantida na galeria de fotos do produto, eliminando retalhos de couro e triângulos de bordado da visualização de capa/carrossel.
+2. **Cores & Couros Disponíveis (`LeatherSwatchHelper`):**
+   - **Nobuck (`7000`, `7007`, `7010`):** Exibe o mostruário oficial de 4 opções: Café, Camel, Ferrugem e Castor com fotos reais WebP e modal de textura HD.
+   - **Látego (`7001`):** Exibe o mostruário oficial de 4 opções: Pinhão, Chocolate, Palha e Preto.
+   - **Sintético / Bidin / Camurça (`7006-14`, `7011`, `7012`):** Swatches reais WebP gerados em `public/images/swatches/sintetico/` (Preto/Bidin, Café, Caramelo) com tonalidades e texturas fiéis.
+3. **Opções de Bordados Disponíveis (`EmbroideryHelper`):**
+   - **Modelos com Grade Oficial (`7007`, `7010`):** Exibem a grade completa **"Desenhos & Pespontos (6 opções)"** (Padrão A, B, C, D, F, G).
+   - **Modelo 7011:** Configurado com **opção exclusiva única (Bordado Padrão A)** utilizando a foto real `Novos Cadastros/Linha Sintetico/bordado padrão a.jfif` (badge de `1 opção`).
+   - **Modelos sem Bordado (`7000`, `7001`, `7006-14`, `7012`):** Não exibem a seção de bordados.
+   - Subtítulo normalizado para *"Opção de Bordado Disponível"* e especificação *"Opção de Bordado Personalizado"* apenas para modelos que possuem bordado.
 
 ---
 
@@ -44,13 +47,19 @@ Mapeamento, ingestão e estruturação dos 7 novos produtos fornecidos na pasta 
 - [x] **Criação da Categoria `sintetico`:** Cadastrada com ID 8 conforme convenção de produção em `cj-calcados-prd.sql`.
 - [x] **Aprimoramento do `DocxProductParser`:** Suporte a traços Unicode (`–`) na grade de medidas, `Cor(es).`, detecção de ausência de CA e correção do título de 7010.
 - [x] **Comando de Importação Idempotente:** Criado `php artisan catalog:import-novos-cadastros` e seeder `NovosCadastrosSeeder`.
-- [x] **Ingestão WebP:** Todas as 18 imagens (capas + variações de material e bordado) processadas via `ImageIngestor` com 3 variantes cada (`original`, `thumb`, `cover`).
+- [x] **Padronização das Galerias:** Apenas a foto do calçado fica em `product_images`, evitando poluição visual no carrossel.
+- [x] **Geração de Swatches Sintéticos WebP:** Imagens otimizadas criadas em `public/images/swatches/sintetico/` (incluindo as texturas oficiais de `7011 - couro sintético cor café.png` e `7012 - couro camurça cor caramelo.png`).
+- [x] **Integração com Mostruário de Couros & Bordados:**
+  - `LeatherSwatchHelper`: Suporte completo a Sintético (Bidin, Café, Camurça Caramelo) e mapeamento oficial dos couros.
+  - `EmbroideryHelper`: 7007 e 7010 com grade de 6 opções; 7011 com Bordado Padrão A exclusivo; 7012 sem bordado.
 - [x] **Sincronização Title Case:** Mapeados novos solados, couros e cores em `SyncProductVariations.php`.
+- [x] **Atualização do Modelo 7006:** Título, código e slug normalizados sem o sufixo de variante `/14` (`7006 BOTINA BIDIN RELAX SOLA DE BORRACHA`), e amostra de couro Bidin atualizada com o novo arquivo `7006/bidin.jpg`.
+- [x] **Atualização do Modelo 7012:** Foto da bota substituída pelo novo `7012.jpg`, textura atualizada para `7012 - couro camurça cor caramelo.png` e opções de bordado removidas.
 
 ---
 
-## 5. ✅ PHASE X COMPLETE
+## 5. ✅ Conclusão e Testes
 - 7 novos produtos cadastrados e ativos no banco de dados.
-- Capas e galerias de imagens geradas em formato WebP local em `storage/app/public/products/{id}/`.
-- Rotas de categoria (`/categorias/sintetico`) e produto (`/produtos/...`) respondendo HTTP 200 OK.
+- Mostruários de Couro e Opções de Bordados 100% alinhados aos componentes padrão de produção.
+- Todos os 82 testes automatizados passando com sucesso.
 - Data: 2026-09-21

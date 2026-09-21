@@ -249,11 +249,11 @@ final class SyncProductVariations extends Command
         ],
         '7000' => [
             'leather' => 'Nobuck',
-            'colors' => ['Café'],
+            'colors' => ['Café', 'Camel', 'Ferrugem', 'Castor'],
         ],
         '7001' => [
             'leather' => 'Látego',
-            'colors' => ['Café', 'Chocolate'],
+            'colors' => ['Pinhão', 'Chocolate', 'Palha', 'Preto'],
         ],
         '7006' => [
             'leather' => 'Sintético Bidin',
@@ -261,18 +261,18 @@ final class SyncProductVariations extends Command
         ],
         '7007' => [
             'leather' => 'Nobuck',
-            'colors' => ['Chocolate', 'Café'],
+            'colors' => ['Café', 'Camel', 'Ferrugem', 'Castor'],
         ],
         '7010' => [
             'leather' => 'Nobuck',
-            'colors' => ['Café'],
+            'colors' => ['Café', 'Camel', 'Ferrugem', 'Castor'],
         ],
         '7011' => [
             'leather' => 'Sintético',
             'colors' => ['Café'],
         ],
         '7012' => [
-            'leather' => 'Camurça Caramelo Sintético',
+            'leather' => 'Camurça Sintético',
             'colors' => ['Caramelo'],
         ],
     ];
@@ -281,7 +281,7 @@ final class SyncProductVariations extends Command
     private static array $embroideryCodes = [
         '4017', '4018', '6002', '6003', '4037', '4040', '4041', '4042',
         '5002', '5003', '4010', '4031', '4032', '4036', '4047', '4048',
-        '7005', '7007', '7010', '7011', '7012',
+        '7005', '7007', '7010', '7011',
     ];
 
     /**
@@ -405,10 +405,18 @@ final class SyncProductVariations extends Command
                     if (! in_array('Opção de Bordado Personalizado', $normalizedMaterials, true)) {
                         $normalizedMaterials[] = 'Opção de Bordado Personalizado';
                     }
+                } else {
+                    if ($subtitle === 'Opção de Bordado Disponível') {
+                        $subtitle = null;
+                    }
+                    $normalizedMaterials = array_values(array_filter($normalizedMaterials, fn ($m) => ! str_contains(mb_strtolower((string) $m), 'bordado')));
                 }
 
-                // Novo slug sem código de variante
+                // Novo slug sem código de variante com garantia de unicidade
                 $newSlug = Str::slug($product->name).'-'.$baseCode;
+                if (Product::where('company_id', $product->company_id)->where('slug', $newSlug)->where('id', '!=', $product->id)->exists()) {
+                    $newSlug .= '-'.$product->id;
+                }
 
                 $rows[] = [
                     (string) $product->id,

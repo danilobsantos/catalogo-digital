@@ -55,7 +55,10 @@ final class ImportNovosCadastrosCommand extends Command
             return self::FAILURE;
         }
 
-        /** @var list<array{code: string, variant: ?string, category_slug: string, collection_slug: string, docx: string, cover_image: string, gallery: list<array{path: string, alt: string, caption: string}>}> $definitions */
+        // Garante os swatches de materiais sintéticos na pasta pública
+        $this->ensureSyntheticSwatches($baseDir);
+
+        /** @var list<array{code: string, variant: ?string, category_slug: string, collection_slug: string, docx: string, cover_image: string}> $definitions */
         $definitions = [
             [
                 'code' => '7000',
@@ -64,13 +67,6 @@ final class ImportNovosCadastrosCommand extends Command
                 'collection_slug' => 'premium',
                 'docx' => $baseDir.'/Coturnos/7000 COTURNO ADVENTURE NOBUCK.docx',
                 'cover_image' => $baseDir.'/Coturnos/7000.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/Coturnos/nobuk café.jpg',
-                        'alt' => 'Amostra Couro Nobuck Café',
-                        'caption' => 'Amostra do couro: Nobuck Café',
-                    ],
-                ],
             ],
             [
                 'code' => '7001',
@@ -79,13 +75,6 @@ final class ImportNovosCadastrosCommand extends Command
                 'collection_slug' => 'premium',
                 'docx' => $baseDir.'/Coturnos/7001 COTURNO ADVENTURE LÁTEGO.docx',
                 'cover_image' => $baseDir.'/Coturnos/7001.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/Coturnos/latego chocolate.jpg',
-                        'alt' => 'Amostra Couro Látego Chocolate',
-                        'caption' => 'Amostra do couro: Látego Chocolate',
-                    ],
-                ],
             ],
             [
                 'code' => '7007',
@@ -94,33 +83,18 @@ final class ImportNovosCadastrosCommand extends Command
                 'collection_slug' => 'premium',
                 'docx' => $baseDir.'/LINHA PASSEIO/7007 BOTINA NOBUCK CAFE SOLA VAQUEJADA CAFE BORDADO LINHAS.docx',
                 'cover_image' => $baseDir.'/LINHA PASSEIO/7007.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/LINHA PASSEIO/nobuk café.jpg',
-                        'alt' => 'Amostra Couro Nobuck Café',
-                        'caption' => 'Amostra do couro: Nobuck Café',
-                    ],
-                    [
-                        'path' => $baseDir.'/LINHA PASSEIO/borbado padrão B.jfif',
-                        'alt' => 'Detalhe Bordado Padrão Linhas B',
-                        'caption' => 'Detalhe do bordado: Padrão B',
-                    ],
-                ],
             ],
             [
                 'code' => '7006',
-                'variant' => '14',
+                'variant' => null,
                 'category_slug' => 'sintetico',
                 'collection_slug' => 'classica',
-                'docx' => $baseDir.'/Linha Sintetico/7006-14 SEGURANÇA BIDIN.docx',
-                'cover_image' => $baseDir.'/Linha Sintetico/7006.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/Linha Sintetico/bidin.jpg',
-                        'alt' => 'Amostra Material Sintético Bidin Preto',
-                        'caption' => 'Amostra do material: Sintético Bidin Preto',
-                    ],
-                ],
+                'docx' => file_exists($baseDir.'/Linha Sintetico/7006/7006-14 SEGURANÇA BIDIN.docx')
+                    ? $baseDir.'/Linha Sintetico/7006/7006-14 SEGURANÇA BIDIN.docx'
+                    : $baseDir.'/Linha Sintetico/7006-14 SEGURANÇA BIDIN.docx',
+                'cover_image' => file_exists($baseDir.'/Linha Sintetico/7006/7006.jpg')
+                    ? $baseDir.'/Linha Sintetico/7006/7006.jpg'
+                    : $baseDir.'/Linha Sintetico/7006.jpg',
             ],
             [
                 'code' => '7010',
@@ -129,58 +103,30 @@ final class ImportNovosCadastrosCommand extends Command
                 'collection_slug' => 'infantil',
                 'docx' => $baseDir.'/linha infatil/7010 BOTINA INFANTIL TEXANA NOBUCK SOLA RAM.docx',
                 'cover_image' => $baseDir.'/linha infatil/7010.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/linha infatil/nobuk café.jpg',
-                        'alt' => 'Amostra Couro Nobuck Café',
-                        'caption' => 'Amostra do couro: Nobuck Café',
-                    ],
-                    [
-                        'path' => $baseDir.'/linha infatil/bordado padrão a.jfif',
-                        'alt' => 'Detalhe Bordado Texana Padrão A',
-                        'caption' => 'Detalhe do bordado: Padrão A',
-                    ],
-                ],
             ],
             [
                 'code' => '7011',
                 'variant' => null,
                 'category_slug' => 'sintetico',
                 'collection_slug' => 'infantil',
-                'docx' => $baseDir.'/Linha Sintetico/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx',
-                'cover_image' => $baseDir.'/Linha Sintetico/7011.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/Linha Sintetico/sintético café.png',
-                        'alt' => 'Amostra Material Sintético Café',
-                        'caption' => 'Amostra do material: Sintético Café',
-                    ],
-                    [
-                        'path' => $baseDir.'/Linha Sintetico/bordado padrão a.jfif',
-                        'alt' => 'Detalhe Bordado Texana Padrão A',
-                        'caption' => 'Detalhe do bordado: Padrão A',
-                    ],
-                ],
+                'docx' => file_exists($baseDir.'/Linha Sintetico/7011/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx')
+                    ? $baseDir.'/Linha Sintetico/7011/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx'
+                    : $baseDir.'/Linha Sintetico/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx',
+                'cover_image' => file_exists($baseDir.'/Linha Sintetico/7011/7011.jpg')
+                    ? $baseDir.'/Linha Sintetico/7011/7011.jpg'
+                    : $baseDir.'/Linha Sintetico/7011.jpg',
             ],
             [
                 'code' => '7012',
                 'variant' => null,
                 'category_slug' => 'sintetico',
                 'collection_slug' => 'classica',
-                'docx' => $baseDir.'/Linha Sintetico/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx',
-                'cover_image' => $baseDir.'/Linha Sintetico/7012.jpg',
-                'gallery' => [
-                    [
-                        'path' => $baseDir.'/Linha Sintetico/cor camurça caramelo.png',
-                        'alt' => 'Amostra Material Camurça Caramelo',
-                        'caption' => 'Amostra do material: Camurça Caramelo',
-                    ],
-                    [
-                        'path' => $baseDir.'/Linha Sintetico/bordado padrão a.jfif',
-                        'alt' => 'Detalhe Bordado Texana Padrão A',
-                        'caption' => 'Detalhe do bordado: Padrão A',
-                    ],
-                ],
+                'docx' => file_exists($baseDir.'/Linha Sintetico/7012/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx')
+                    ? $baseDir.'/Linha Sintetico/7012/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx'
+                    : $baseDir.'/Linha Sintetico/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx',
+                'cover_image' => file_exists($baseDir.'/Linha Sintetico/7012/7012.jpg')
+                    ? $baseDir.'/Linha Sintetico/7012/7012.jpg'
+                    : $baseDir.'/Linha Sintetico/7012.jpg',
             ],
         ];
 
@@ -208,10 +154,10 @@ final class ImportNovosCadastrosCommand extends Command
                 'is_active' => true,
             ]);
 
-            // Limpa imagens antigas do produto antes de reanexar (idempotência)
+            // Limpa imagens antigas do produto antes de reanexar (garante idempotência e remove swatches/bordados da galeria do produto)
             $product->images()->delete();
 
-            // Ingestão da Capa Principal
+            // Ingestão da Capa Principal do Calçado
             if (file_exists($def['cover_image'])) {
                 $coverVariants = $imageIngestor->ingestLocalPath(
                     $def['cover_image'],
@@ -235,43 +181,69 @@ final class ImportNovosCadastrosCommand extends Command
                     $this->info("  ✔ Imagem de Capa ingerida: {$def['code']}.webp");
                 }
             }
+        }
 
-            // Ingestão das Imagens da Galeria (Amostras de Couro, Sintético e Bordados)
-            $sortOrder = 1;
-            foreach ($def['gallery'] as $galleryItem) {
-                if (! file_exists($galleryItem['path'])) {
-                    continue;
-                }
+        $this->newLine();
+        $this->info('Sincronizando variações oficiais, couros, cores e bordados padronizados...');
+        $this->call('catalog:sync-variations');
 
-                $fileBase = pathinfo($galleryItem['path'], PATHINFO_FILENAME);
-                $cleanBase = $def['code'].'_'.preg_replace('/[^a-zA-Z0-9]/', '_', Str::slug($fileBase));
+        $this->info('Todos os novos produtos foram importados e padronizados com sucesso!');
 
-                $variants = $imageIngestor->ingestLocalPath(
-                    $galleryItem['path'],
-                    'products/'.$product->id,
-                    $cleanBase,
-                    'public'
-                );
+        return self::SUCCESS;
+    }
 
-                if ($variants['original'] !== null) {
-                    $product->images()->create([
-                        'company_id' => $company->id,
-                        'path' => $variants['original'],
-                        'thumb_path' => $variants['thumb'],
-                        'cover_path' => $variants['cover'],
-                        'disk' => 'public',
-                        'alt_text' => $galleryItem['alt'] ?? $product->name,
-                        'caption' => $galleryItem['caption'] ?? null,
-                        'is_cover' => false,
-                        'sort_order' => $sortOrder++,
-                    ]);
-                    $this->info("  ✔ Galeria [{$galleryItem['caption']}]: {$cleanBase}.webp");
-                }
+    private function ensureSyntheticSwatches(string $baseDir): void
+    {
+        $targetDir = public_path('images/swatches/sintetico');
+        if (! is_dir($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+
+        // Bidin / Preto (Prioriza textura oficial do 7006 se presente)
+        $bidinCustomSrc = $baseDir.'/Linha Sintetico/7006/bidin.jpg';
+        $bidinSrc = file_exists($bidinCustomSrc) ? $bidinCustomSrc : $baseDir.'/Linha Sintetico/bidin.jpg';
+        if (file_exists($bidinSrc)) {
+            $im = imagecreatefromjpeg($bidinSrc);
+            if ($im !== false) {
+                imagewebp($im, $targetDir.'/bidin.webp', 90);
+                imagewebp($im, $targetDir.'/preto.webp', 90);
             }
         }
 
-        $this->info('Todos os 7 novos produtos foram cadastrados com sucesso!');
+        // Sintético Café (Prioriza textura oficial do 7011 se presente)
+        $cafeCustomSrc = $baseDir.'/Linha Sintetico/7011 - couro sintético cor café.png';
+        $cafeSrc = file_exists($cafeCustomSrc) ? $cafeCustomSrc : $baseDir.'/Linha Sintetico/sintético café.png';
+        if (file_exists($cafeSrc)) {
+            $im = imagecreatefrompng($cafeSrc);
+            if ($im !== false) {
+                imagewebp($im, $targetDir.'/cafe.webp', 90);
+            }
+        }
 
-        return self::SUCCESS;
+        // Camurça Caramelo (Prioriza textura oficial do 7012 se presente)
+        $carameloCustomSrc = $baseDir.'/Linha Sintetico/7012 - couro camurça cor caramelo.png';
+        $carameloSrc = file_exists($carameloCustomSrc) ? $carameloCustomSrc : $baseDir.'/Linha Sintetico/cor camurça caramelo.png';
+        if (file_exists($carameloSrc)) {
+            $im = imagecreatefrompng($carameloSrc);
+            if ($im !== false) {
+                imagewebp($im, $targetDir.'/caramelo.webp', 90);
+                imagewebp($im, $targetDir.'/camurca-caramelo.webp', 90);
+                imagewebp($im, $targetDir.'/island-caramelo.webp', 90);
+            }
+        }
+
+        // Bordado Padrão A exclusivo para modelo 7011
+        $embTargetDir = public_path('images/embroidery');
+        if (! is_dir($embTargetDir)) {
+            mkdir($embTargetDir, 0755, true);
+        }
+        $embTarget = $embTargetDir.'/7011-bordado-a.webp';
+        $embSrc = $baseDir.'/Linha Sintetico/bordado padrão a.jfif';
+        if (file_exists($embSrc) && ! file_exists($embTarget)) {
+            $im = imagecreatefromjpeg($embSrc);
+            if ($im !== false) {
+                imagewebp($im, $embTarget, 90);
+            }
+        }
     }
 }
