@@ -58,90 +58,65 @@ final class ImportNovosCadastrosCommand extends Command
         // Garante os swatches de materiais sintéticos na pasta pública
         $this->ensureSyntheticSwatches($baseDir);
 
-        /** @var list<array{code: string, variant: ?string, category_slug: string, collection_slug: string, docx: string, cover_image: string}> $definitions */
+        /** @var list<array{code: string, name_fallback: string, category_slug: string, collection_slug: string}> $definitions */
         $definitions = [
             [
                 'code' => '7000',
-                'variant' => null,
+                'name_fallback' => '7000 COTURNO ADVENTURE NOBUCK',
                 'category_slug' => 'coturno',
                 'collection_slug' => 'premium',
-                'docx' => $baseDir.'/Coturnos/7000 COTURNO ADVENTURE NOBUCK.docx',
-                'cover_image' => $baseDir.'/Coturnos/7000.jpg',
             ],
             [
                 'code' => '7001',
-                'variant' => null,
+                'name_fallback' => '7001 COTURNO ADVENTURE LÁTEGO',
                 'category_slug' => 'coturno',
                 'collection_slug' => 'premium',
-                'docx' => $baseDir.'/Coturnos/7001 COTURNO ADVENTURE LÁTEGO.docx',
-                'cover_image' => $baseDir.'/Coturnos/7001.jpg',
             ],
             [
                 'code' => '7007',
-                'variant' => null,
+                'name_fallback' => '7007 BOTINA NOBUCK CAFE SOLA VAQUEJADA CAFE BORDADO LINHAS',
                 'category_slug' => 'botina-passeio',
                 'collection_slug' => 'premium',
-                'docx' => $baseDir.'/LINHA PASSEIO/7007 BOTINA NOBUCK CAFE SOLA VAQUEJADA CAFE BORDADO LINHAS.docx',
-                'cover_image' => $baseDir.'/LINHA PASSEIO/7007.jpg',
             ],
             [
                 'code' => '7006',
-                'variant' => null,
+                'name_fallback' => '7006 BOTINA BIDIN RELAX SOLA DE BORRACHA',
                 'category_slug' => 'sintetico',
                 'collection_slug' => 'classica',
-                'docx' => file_exists($baseDir.'/Linha Sintetico/7006/7006-14 SEGURANÇA BIDIN.docx')
-                    ? $baseDir.'/Linha Sintetico/7006/7006-14 SEGURANÇA BIDIN.docx'
-                    : $baseDir.'/Linha Sintetico/7006-14 SEGURANÇA BIDIN.docx',
-                'cover_image' => file_exists($baseDir.'/Linha Sintetico/7006/7006.jpg')
-                    ? $baseDir.'/Linha Sintetico/7006/7006.jpg'
-                    : $baseDir.'/Linha Sintetico/7006.jpg',
             ],
             [
                 'code' => '7010',
-                'variant' => null,
+                'name_fallback' => '7010 BOTINA INFANTIL TEXANA NOBUCK SOLA RAM',
                 'category_slug' => 'infantil',
                 'collection_slug' => 'infantil',
-                'docx' => $baseDir.'/linha infatil/7010 BOTINA INFANTIL TEXANA NOBUCK SOLA RAM.docx',
-                'cover_image' => $baseDir.'/linha infatil/7010.jpg',
             ],
             [
                 'code' => '7011',
-                'variant' => null,
+                'name_fallback' => '7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM',
                 'category_slug' => 'sintetico',
                 'collection_slug' => 'infantil',
-                'docx' => file_exists($baseDir.'/Linha Sintetico/7011/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx')
-                    ? $baseDir.'/Linha Sintetico/7011/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx'
-                    : $baseDir.'/Linha Sintetico/7011 BOTINA SINTÉTICO INFANTIL TEXANA SOLA RAM.docx',
-                'cover_image' => file_exists($baseDir.'/Linha Sintetico/7011/7011.jpg')
-                    ? $baseDir.'/Linha Sintetico/7011/7011.jpg'
-                    : $baseDir.'/Linha Sintetico/7011.jpg',
             ],
             [
                 'code' => '7012',
-                'variant' => null,
+                'name_fallback' => '7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE',
                 'category_slug' => 'sintetico',
                 'collection_slug' => 'classica',
-                'docx' => file_exists($baseDir.'/Linha Sintetico/7012/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx')
-                    ? $baseDir.'/Linha Sintetico/7012/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx'
-                    : $baseDir.'/Linha Sintetico/7012 BOTINA TEXANA CAMURCA CARAMELO SOLA RAM CAFE.docx',
-                'cover_image' => file_exists($baseDir.'/Linha Sintetico/7012/7012.jpg')
-                    ? $baseDir.'/Linha Sintetico/7012/7012.jpg'
-                    : $baseDir.'/Linha Sintetico/7012.jpg',
             ],
         ];
 
         foreach ($definitions as $def) {
             $this->line("Processando produto [{$def['code']}]...");
 
-            $dto = $parser->parse($def['docx'], basename($def['docx']));
-            if ($dto === null) {
-                $this->warn("Falha ao parsear DOCX: {$def['docx']}");
+            $docxFile = $this->findFile($baseDir, $def['code'], ['docx']);
+            $dto = $docxFile ? $parser->parse($docxFile, basename($docxFile)) : null;
 
-                continue;
+            if ($dto !== null) {
+                // Ingestão do produto via IngestDocxProductAction
+                $product = $ingestAction->execute($company, $dto);
+            } else {
+                $this->warn("  Aviso: DOCX não encontrado/parseado para [{$def['code']}]. Criando/atualizando via fallback estruturado...");
+                $product = $this->createOrUpdateFallback($company, $def);
             }
-
-            // Ingestão do produto via IngestDocxProductAction
-            $product = $ingestAction->execute($company, $dto);
 
             // Ajustes manuais de categoria, coleção e tags
             $category = Category::withoutCompanyScope()->where('company_id', $company->id)->where('slug', $def['category_slug'])->first();
@@ -157,10 +132,11 @@ final class ImportNovosCadastrosCommand extends Command
             // Limpa imagens antigas do produto antes de reanexar (garante idempotência e remove swatches/bordados da galeria do produto)
             $product->images()->delete();
 
-            // Ingestão da Capa Principal do Calçado
-            if (file_exists($def['cover_image'])) {
+            // Ingestão da Capa Principal do Calçado via busca dinâmica por imagem
+            $coverImage = $this->findFile($baseDir, $def['code'], ['jpg', 'png', 'jpeg', 'webp']);
+            if ($coverImage && file_exists($coverImage)) {
                 $coverVariants = $imageIngestor->ingestLocalPath(
-                    $def['cover_image'],
+                    $coverImage,
                     'products/'.$product->id,
                     $def['code'],
                     'public'
@@ -180,6 +156,8 @@ final class ImportNovosCadastrosCommand extends Command
                     ]);
                     $this->info("  ✔ Imagem de Capa ingerida: {$def['code']}.webp");
                 }
+            } else {
+                $this->warn("  Aviso: Imagem de capa não encontrada para [{$def['code']}].");
             }
         }
 
@@ -192,6 +170,81 @@ final class ImportNovosCadastrosCommand extends Command
         return self::SUCCESS;
     }
 
+    /**
+     * Busca arquivos pelo prefixo do código de forma resiliente ao filesystem (sem sensibilidade a encoding NFD/NFC).
+     *
+     * @param  list<string>  $extensions
+     */
+    private function findFile(string $baseDir, string $code, array $extensions): ?string
+    {
+        foreach ($extensions as $ext) {
+            $patterns = [
+                "{$baseDir}/*/{$code}*.{$ext}",
+                "{$baseDir}/*/*/{$code}*.{$ext}",
+                "{$baseDir}/{$code}*.{$ext}",
+            ];
+
+            foreach ($patterns as $pattern) {
+                $matches = glob($pattern);
+                if (! empty($matches)) {
+                    return $matches[0];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Fallback de criação caso o documento Word não possa ser lido.
+     *
+     * @param  array{code: string, name_fallback: string, category_slug: string, collection_slug: string}  $def
+     */
+    private function createOrUpdateFallback(Company $company, array $def): Product
+    {
+        $baseSlug = Str::slug($def['name_fallback']).'-'.$def['code'];
+        $slug = $baseSlug;
+
+        $slugConflict = Product::withoutCompanyScope()
+            ->where('company_id', $company->id)
+            ->where('slug', $slug)
+            ->where('code', '!=', $def['code'])
+            ->exists();
+        if ($slugConflict) {
+            $slug = $baseSlug.'-'.Str::lower(Str::random(4));
+        }
+
+        return Product::withoutCompanyScope()->updateOrCreate(
+            [
+                'company_id' => $company->id,
+                'code' => $def['code'],
+            ],
+            [
+                'company_id' => $company->id,
+                'code' => $def['code'],
+                'variant_code' => null,
+                'slug' => $slug,
+                'name' => $def['name_fallback'],
+                'is_new' => true,
+                'is_active' => true,
+                'sort_order' => (int) $def['code'],
+                'published_at' => now(),
+            ]
+        );
+    }
+
+    private function findPattern(string $dir, array $patterns): ?string
+    {
+        foreach ($patterns as $pattern) {
+            $matches = glob("{$dir}/{$pattern}");
+            if (! empty($matches)) {
+                return $matches[0];
+            }
+        }
+
+        return null;
+    }
+
     private function ensureSyntheticSwatches(string $baseDir): void
     {
         $targetDir = public_path('images/swatches/sintetico');
@@ -199,10 +252,11 @@ final class ImportNovosCadastrosCommand extends Command
             mkdir($targetDir, 0755, true);
         }
 
+        $synthDir = "{$baseDir}/Linha Sintetico";
+
         // Bidin / Preto (Prioriza textura oficial do 7006 se presente)
-        $bidinCustomSrc = $baseDir.'/Linha Sintetico/7006/bidin.jpg';
-        $bidinSrc = file_exists($bidinCustomSrc) ? $bidinCustomSrc : $baseDir.'/Linha Sintetico/bidin.jpg';
-        if (file_exists($bidinSrc)) {
+        $bidinSrc = $this->findPattern($synthDir, ['7006/bidin.jpg', '*bidin*.jpg']);
+        if ($bidinSrc && file_exists($bidinSrc)) {
             $im = imagecreatefromjpeg($bidinSrc);
             if ($im !== false) {
                 imagewebp($im, $targetDir.'/bidin.webp', 90);
@@ -211,9 +265,8 @@ final class ImportNovosCadastrosCommand extends Command
         }
 
         // Sintético Café (Prioriza textura oficial do 7011 se presente)
-        $cafeCustomSrc = $baseDir.'/Linha Sintetico/7011 - couro sintético cor café.png';
-        $cafeSrc = file_exists($cafeCustomSrc) ? $cafeCustomSrc : $baseDir.'/Linha Sintetico/sintético café.png';
-        if (file_exists($cafeSrc)) {
+        $cafeSrc = $this->findPattern($synthDir, ['*7011*.png', '*sint*caf*.png', '*caf*.png']);
+        if ($cafeSrc && file_exists($cafeSrc)) {
             $im = imagecreatefrompng($cafeSrc);
             if ($im !== false) {
                 imagewebp($im, $targetDir.'/cafe.webp', 90);
@@ -221,9 +274,8 @@ final class ImportNovosCadastrosCommand extends Command
         }
 
         // Camurça Caramelo (Prioriza textura oficial do 7012 se presente)
-        $carameloCustomSrc = $baseDir.'/Linha Sintetico/7012 - couro camurça cor caramelo.png';
-        $carameloSrc = file_exists($carameloCustomSrc) ? $carameloCustomSrc : $baseDir.'/Linha Sintetico/cor camurça caramelo.png';
-        if (file_exists($carameloSrc)) {
+        $carameloSrc = $this->findPattern($synthDir, ['*7012*.png', '*camur*caramelo*.png', '*caramelo*.png']);
+        if ($carameloSrc && file_exists($carameloSrc)) {
             $im = imagecreatefrompng($carameloSrc);
             if ($im !== false) {
                 imagewebp($im, $targetDir.'/caramelo.webp', 90);
@@ -238,8 +290,8 @@ final class ImportNovosCadastrosCommand extends Command
             mkdir($embTargetDir, 0755, true);
         }
         $embTarget = $embTargetDir.'/7011-bordado-a.webp';
-        $embSrc = $baseDir.'/Linha Sintetico/bordado padrão a.jfif';
-        if (file_exists($embSrc) && ! file_exists($embTarget)) {
+        $embSrc = $this->findPattern($synthDir, ['*7011*.jfif', '*padr*a*.jfif', '*bordado*.jfif']);
+        if ($embSrc && file_exists($embSrc) && ! file_exists($embTarget)) {
             $im = imagecreatefromjpeg($embSrc);
             if ($im !== false) {
                 imagewebp($im, $embTarget, 90);

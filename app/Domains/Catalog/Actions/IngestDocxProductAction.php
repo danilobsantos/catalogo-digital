@@ -35,6 +35,16 @@ final class IngestDocxProductAction
                 .'-'.Str::slug($dto->rawCode)
                 .($dto->variantCode ? '-'.Str::slug($dto->variantCode) : '');
 
+            $slug = $baseSlug;
+            $slugConflict = Product::withoutCompanyScope()
+                ->where('company_id', $company->id)
+                ->where('slug', $slug)
+                ->where('code', '!=', $dto->rawCode)
+                ->exists();
+            if ($slugConflict) {
+                $slug = $baseSlug.'-'.Str::lower(Str::random(4));
+            }
+
             $payload = [
                 'company_id' => $company->id,
                 'category_id' => $categoryId,
@@ -42,7 +52,7 @@ final class IngestDocxProductAction
                 'brand_id' => $brandId,
                 'code' => $dto->rawCode,
                 'variant_code' => $dto->variantCode,
-                'slug' => $baseSlug,
+                'slug' => $slug,
                 'name' => $this->clean($dto->title),
                 'subtitle' => $this->clean($dto->subtitle) ?: null,
                 'short_description' => $this->clean($dto->shortDescription ?? $dto->description) ?: null,
