@@ -58,6 +58,7 @@ Mapeamento, ingestão e estruturação dos 7 novos produtos fornecidos na pasta 
 - [x] **Atualização do Modelo 7007:** Foto da bota substituída por `7007.jpg`, opção de couro configurada exclusivamente para `Nobuck Café` com amostra atualizada de `nobuk café.jpg`, e bordado configurado exclusivamente para `Bordado Padrão B` com a imagem oficial `borbado padrão B.jfif`.
 - [x] **Atualização do Modelo 7010:** Foto da bota substituída por `7010.jpg`, couro configurado exclusivamente para `Nobuck Café`, e bordado configurado exclusivamente para `Bordado Padrão A` com a imagem oficial `bordado padrão a.jfif`.
 - [x] **Atualização do Modelo 7000:** Foto da bota substituída por `7000.jpg`, e couro configurado exclusivamente para `Nobuck Café` (removidas as demais cores).
+- [x] **Atualização do Modelo 7001:** Foto da bota substituída por `7001.jpg`, e couro configurado exclusivamente para `Látego Chocolate` (removidas as demais cores).
 
 ---
 

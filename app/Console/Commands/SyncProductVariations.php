@@ -253,7 +253,7 @@ final class SyncProductVariations extends Command
         ],
         '7001' => [
             'leather' => 'Látego',
-            'colors' => ['Pinhão', 'Chocolate', 'Palha', 'Preto'],
+            'colors' => ['Chocolate'],
         ],
         '7006' => [
             'leather' => 'Sintético Bidin',
