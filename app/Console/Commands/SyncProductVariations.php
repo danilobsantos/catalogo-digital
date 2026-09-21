@@ -247,12 +247,41 @@ final class SyncProductVariations extends Command
             'leather' => 'Sintético',
             'colors' => ['Island Caramelo'],
         ],
+        '7000' => [
+            'leather' => 'Nobuck',
+            'colors' => ['Café'],
+        ],
+        '7001' => [
+            'leather' => 'Látego',
+            'colors' => ['Café', 'Chocolate'],
+        ],
+        '7006' => [
+            'leather' => 'Sintético Bidin',
+            'colors' => ['Preto'],
+        ],
+        '7007' => [
+            'leather' => 'Nobuck',
+            'colors' => ['Chocolate', 'Café'],
+        ],
+        '7010' => [
+            'leather' => 'Nobuck',
+            'colors' => ['Café'],
+        ],
+        '7011' => [
+            'leather' => 'Sintético',
+            'colors' => ['Café'],
+        ],
+        '7012' => [
+            'leather' => 'Camurça Caramelo Sintético',
+            'colors' => ['Caramelo'],
+        ],
     ];
 
     /** @var list<string> */
     private static array $embroideryCodes = [
         '4017', '4018', '6002', '6003', '4037', '4040', '4041', '4042',
-        '5002', '5003', '4010', '4031', '4032', '4036', '4047', '4048', '7005',
+        '5002', '5003', '4010', '4031', '4032', '4036', '4047', '4048',
+        '7005', '7007', '7010', '7011', '7012',
     ];
 
     /**
@@ -287,6 +316,11 @@ final class SyncProductVariations extends Command
         'HUGO AMARELA' => 'Hugo Amarela',
         'BOOTENIS' => 'Bootênis',
         'DOM DIEGO' => 'Dom Diego',
+        'VAQUEJADA' => 'Vaquejada',
+        'RAM' => 'Ram',
+        'RAM CAFÉ' => 'Ram Café',
+        'RAM CAFE' => 'Ram Café',
+        'SEGURANÇA' => 'Sola de Segurança',
     ];
 
     /**
@@ -299,6 +333,9 @@ final class SyncProductVariations extends Command
         'Elástico Coberto' => 'Elástico Coberto',
         'ELASTICO ABERTO' => 'Elástico Aberto',
         'Elástico Aberto' => 'Elástico Aberto',
+        'CADARÇO' => 'Cadarço',
+        'FECHAMENTO COM CADARÇO' => 'Cadarço',
+        'Cadarço' => 'Cadarço',
         'COM CADARÇO' => 'Com Cadarço',
         'ELASTICO COLMEIA OURO' => 'Elástico Colmeia Ouro',
         'Elástico Lateral' => 'Elástico Lateral',

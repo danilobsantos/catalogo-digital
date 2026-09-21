@@ -66,6 +66,7 @@ final class CatalogSeeder extends Seeder
             ['slug' => 'coturno', 'name' => 'Coturno', 'description' => 'Coturnos robustos com cadarço, bico PVC e solado adventure.'],
             ['slug' => 'texana', 'name' => 'Texana', 'description' => 'Botinas texanas — tradicional, feminina e infantil, com solado stylizado.'],
             ['slug' => 'infantil', 'name' => 'Infantil', 'description' => 'Linha infantil — botina, texana e modelos especiais com solado Bento/PVC.'],
+            ['slug' => 'sintetico', 'name' => 'Sintético', 'description' => 'Botinas desenvolvidas para proporcionar conforto, com um excelente acabamento, indicada para uso casual e no dia a dia.'],
             ['slug' => 'outros', 'name' => 'Outros', 'description' => 'Modelos especiais e variações pontuais.'],
         ];
 

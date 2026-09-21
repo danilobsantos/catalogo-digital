@@ -61,7 +61,7 @@ final class IngestDocxProductAction
                 'weight_grams' => $dto->weight,
                 'has_ca' => $dto->hasCa,
                 'is_featured' => $dto->hasCa,
-                'is_new' => str_starts_with($dto->rawCode, '4') || str_starts_with($dto->rawCode, '5'),
+                'is_new' => str_starts_with($dto->rawCode, '4') || str_starts_with($dto->rawCode, '5') || str_starts_with($dto->rawCode, '7'),
                 'sort_order' => (int) $dto->rawCode,
                 'is_active' => true,
                 'published_at' => now(),
@@ -80,9 +80,12 @@ final class IngestDocxProductAction
 
     private function resolveCategory(Company $company, DocxProductDto $dto): ?int
     {
-        $haystack = mb_strtolower($dto->title.' '.$dto->subtitle.' '.($dto->shortDescription ?? ''));
+        $haystack = mb_strtolower($dto->title.' '.$dto->subtitle.' '.($dto->shortDescription ?? '').' '.implode(' ', $dto->materials));
 
         $priority = [
+            'sintético' => 'sintetico',
+            'sintetico' => 'sintetico',
+            'bidin' => 'sintetico',
             'infantil' => 'infantil',
             'texana' => 'texana',
             'segurança ca' => 'botina-seguranca',

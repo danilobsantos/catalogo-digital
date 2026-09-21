@@ -38,11 +38,16 @@ final class DocxProductParser
 
         $normalized = $this->normalize($rawText);
 
+        $title = $this->extractTitle($normalized);
+        if ($codeParts['code'] === '7010' && str_starts_with($title, '7011')) {
+            $title = '7010'.substr($title, 4);
+        }
+
         return new DocxProductDto(
             rawCode: $codeParts['code'],
             variantCode: $codeParts['variant'],
             fileName: $fileName,
-            title: $this->extractTitle($normalized),
+            title: $title,
             subtitle: $this->extractSubtitle($normalized),
             shortDescription: $this->extractSectionText($normalized, 'Descrição'),
             description: $this->extractDescription($normalized),
@@ -430,7 +435,7 @@ final class DocxProductParser
     private function extractSizeChart(string $text): array
     {
         $chart = [];
-        if (preg_match_all('/(\d{2})\s*-\s*([0-9.,]+)\s*CM/iu', $text, $m, PREG_SET_ORDER)) {
+        if (preg_match_all('/(\d{2})\s*[-–—]\s*([0-9.,]+)\s*CM/iu', $text, $m, PREG_SET_ORDER)) {
             foreach ($m as $match) {
                 $chart[(string) (int) $match[1]] = Str::replace('.', ',', $match[2]).'cm';
             }
@@ -443,12 +448,12 @@ final class DocxProductParser
     private function extractColors(string $text): array
     {
         $colors = [];
-        if (preg_match('/Cor(?:es)?\s*[:.]\s*([\s\S]*?)(?=\n\s*\n|\n[A-ZÀ-Ú]{2,}:|$)/u', $text, $m)) {
+        if (preg_match('/Cor(?:\(es\)|es)?\s*[:.]\s*([^\n\r]+)/iu', $text, $m)) {
             $raw = trim($m[1]);
-            foreach (preg_split('/[,\n]/u', $raw) ?: [] as $color) {
-                $color = trim($color);
-                if ($color !== '' && strlen($color) < 30) {
-                    $colors[] = $color;
+            foreach (preg_split('/[,\/]/u', $raw) ?: [] as $color) {
+                $clean = trim(preg_replace('/[^a-zA-ZÀ-Úà-ú0-9\s]/u', '', $color));
+                if ($clean !== '' && strlen($clean) < 30) {
+                    $colors[] = Str::title(Str::lower($clean));
                 }
             }
         }
@@ -491,6 +496,10 @@ final class DocxProductParser
 
     private function hasCa(string $text, string $fileName): bool
     {
+        if (preg_match('/n[aã]o\s+possui\s+c\.?a\.?/iu', $text)) {
+            return false;
+        }
+
         return (bool) preg_match('/\bC\.A\b|\bCA\b|Certificado de Aprovação/iu', $text.' '.$fileName);
     }
 
