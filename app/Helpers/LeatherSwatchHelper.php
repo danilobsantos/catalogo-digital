@@ -130,15 +130,23 @@ final class LeatherSwatchHelper
             };
 
             if (str_contains($normalized, 'latego')) {
-                $colors = ['Pinhão', 'Chocolate', 'Palha', 'Preto'];
+                $defaultColors = ['Pinhão', 'Chocolate', 'Palha', 'Preto'];
+                $colors = ! empty($colorsField) ? array_values(array_intersect($defaultColors, $colorsField)) : $defaultColors;
+                if (empty($colors)) {
+                    $colors = ! empty($colorsField) ? $colorsField : $defaultColors;
+                }
             } elseif (str_contains($normalized, 'nobuck')) {
-                $colors = ['Café', 'Camel', 'Ferrugem', 'Castor'];
+                $defaultColors = ['Café', 'Camel', 'Ferrugem', 'Castor'];
+                $colors = ! empty($colorsField) ? array_values(array_intersect($defaultColors, $colorsField)) : $defaultColors;
+                if (empty($colors)) {
+                    $colors = ! empty($colorsField) ? $colorsField : $defaultColors;
+                }
             } elseif (str_contains($normalized, 'vaqueta')) {
-                $colors = ['Preto'];
+                $colors = ! empty($colorsField) ? $colorsField : ['Preto'];
             } elseif (str_contains($normalized, 'bidin')) {
-                $colors = ['Preto'];
+                $colors = ! empty($colorsField) ? $colorsField : ['Preto'];
             } elseif (str_contains($normalized, 'camurca')) {
-                $colors = ['Caramelo'];
+                $colors = ! empty($colorsField) ? $colorsField : ['Caramelo'];
             } elseif (str_contains($normalized, 'sintetico')) {
                 $colors = ! empty($colorsField) ? $colorsField : ['Café'];
             } else {
