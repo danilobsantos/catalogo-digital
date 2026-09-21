@@ -104,6 +104,18 @@ final class EmbroideryHelper
             ];
         }
 
+        // Modelo 7010: Bordado Padrão A exclusivo
+        if ($code === '7010' || $baseCode === '7010') {
+            return [
+                [
+                    'code' => 'A',
+                    'title' => 'Bordado Padrão A',
+                    'subtitle' => 'Desenho decorativo bordado no cano',
+                    'image_url' => asset('images/embroidery/7010-bordado-a.webp'),
+                ],
+            ];
+        }
+
         // Modelos infantis texanos (6002 e 6003)
         if (in_array($code, self::$infantilTexanaModels, true) || in_array($baseCode, self::$infantilTexanaModels, true)) {
             return [
