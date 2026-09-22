@@ -25,11 +25,11 @@ final class PageSeeder extends Seeder
         $rows = [
             [
                 'slug' => 'sobre',
-                'title' => 'Sobre a CJ Calçados',
-                'subtitle' => 'Tradição, qualidade e conforto em cada passo.',
-                'content' => "## Nossa história\n\nA CJ Calçados é uma empresa familiar com raízes na tradição do calçado de couro. Há décadas vestimos o trabalhador brasileiro com peças selecionadas, pensadas para durar.\n\n- **Couro selecionado** matéria-prima brasileira premium.\n- **Solado robusto** testado em campo, do campo à construção civil.\n- **Acabamento manual** costuras reforçadas, palmilha antibacteriana.\n\nCatálogo digital, atendimento direto via WhatsApp e parcerias com lojistas em todo o território nacional.",
-                'meta_title' => 'Sobre — CJ Calçados',
-                'meta_description' => 'Empresa familiar há décadas fabricando calçados de couro premium. Tradição, qualidade e conforto em cada passo.',
+                'title' => 'Quem Somos — CJ Calçados',
+                'subtitle' => 'Mais de 20 anos transformando tradição em qualidade.',
+                'content' => "## Nossa História\n\nA CJ nasceu da vivência de quem respira o setor calçadista há duas décadas. São mais de 20 anos fornecendo insumos de excelência para a indústria local, construindo uma trajetória sólida baseada em dedicação, confiança e compromisso.\n\nGuiados por essa experiência, evoluímos e passamos a fabricar botinas de segurança e passeio que unem:\n\n- **Conforto**\n- **Resistência**\n- **Tecnologia**\n- **Qualidade**\n- **Tradição**\n\nDa seleção rigorosa da matéria-prima ao acabamento final, cada detalhe é desenvolvido para entregar produtos duráveis, seguros e confortáveis.\n\nMais do que fabricar calçados, preservamos uma história construída com trabalho, respeito e paixão.\n\n### Por que escolher a CJ?\n\n- Mais de 20 anos de experiência\n- Fabricação própria\n- Couro selecionado\n- Alto padrão de acabamento\n- Solados resistentes\n- Conforto para o dia todo\n- Modelos para trabalho e lazer\n- Excelente custo-benefício\n\n### Fábrica e Localização\n\nAv. José Antônio dos Santos, 203 - Jardim Planalto, Guaxupé - MG, CEP 37832-192.",
+                'meta_title' => 'Quem Somos — CJ Calçados | Fábrica Própria em Guaxupé-MG',
+                'meta_description' => 'Há mais de 20 anos fabricando botinas de couro legítimo de segurança e passeio com conforto, durabilidade e tradição em Guaxupé-MG.',
                 'sort_order' => 10,
                 'is_active' => true,
             ],

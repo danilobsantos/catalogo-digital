@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Domains\Analytics\Http\Controllers\AnalyticsController;
 use App\Domains\Catalog\Http\Controllers\CatalogController;
+use App\Domains\Content\Http\Controllers\AboutController;
 use App\Domains\Content\Http\Controllers\PageController;
 use App\Domains\SEO\Http\Controllers\SeoController;
 use App\Http\Controllers\HomeController;
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/sobre', [AboutController::class, 'index'])->name('public.about');
+Route::redirect('/quem-somos', '/sobre', 301);
 
 Route::get('/produtos', Search::class)->name('public.products.index');
 Route::get('/produtos/{product:slug}', [CatalogController::class, 'show'])->name('public.products.show');

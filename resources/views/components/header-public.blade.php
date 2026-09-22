@@ -40,6 +40,10 @@
                class="hover:text-[#ff8400] transition relative py-2 {{ request()->routeIs('public.categories.*') ? 'text-[#ff8400] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#ff8400]' : '' }}">
                 Linhas & Categorias
             </a>
+            <a href="{{ route('public.about') }}"
+               class="hover:text-[#ff8400] transition relative py-2 {{ request()->routeIs('public.about') ? 'text-[#ff8400] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#ff8400]' : '' }}">
+                Quem Somos
+            </a>
             {{--
             <a href="{{ route('public.brands.index') }}"
                class="hover:text-[#ff8400] transition relative py-2 {{ request()->routeIs('public.brands.*') ? 'text-[#ff8400] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#ff8400]' : '' }}">
@@ -106,6 +110,10 @@
             <a href="{{ route('public.categories.index') }}"
                class="px-4 py-3 rounded-xl hover:bg-[#E6E1D5]/50 transition {{ request()->routeIs('public.categories.*') ? 'bg-[#F4F1EA] font-bold text-[#ff8400]' : '' }}">
                 Linhas & Categorias
+            </a>
+            <a href="{{ route('public.about') }}"
+               class="px-4 py-3 rounded-xl hover:bg-[#E6E1D5]/50 transition {{ request()->routeIs('public.about') ? 'bg-[#F4F1EA] font-bold text-[#ff8400]' : '' }}">
+                Quem Somos
             </a>
             {{--
             <a href="{{ route('public.brands.index') }}"
