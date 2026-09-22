@@ -73,3 +73,19 @@ it('marketing dashboard redireciona usuário sem empresa (422 pela ensure.compan
 
     $this->actingAs($user)->get(route('admin.marketing'))->assertStatus(422);
 });
+
+it('marketing dashboard renderiza corretamente com eventos de busca', function (): void {
+    $user = User::where('email', 'admin@cjcalcados.com.br')->firstOrFail();
+
+    AnalyticsEvent::create([
+        'company_id' => $user->active_company_id,
+        'event' => 'search',
+        'payload' => ['q' => 'botina texana'],
+        'path' => '/produtos',
+        'occurred_at' => now(),
+    ]);
+
+    $this->get(route('admin.marketing'))
+        ->assertOk()
+        ->assertSee('botina texana');
+});
